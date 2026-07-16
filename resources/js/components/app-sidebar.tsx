@@ -1,9 +1,12 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import type { SharedData } from '@/types';
+
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
+import { menus } from '@/components/role-menu';
+
 import {
     Sidebar,
     SidebarContent,
@@ -13,31 +16,27 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+
 import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
-
-const footerNavItems: NavItem[] = [
+const footerNavItems = [
     {
         title: 'Repository',
         href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
     },
     {
         title: 'Documentation',
         href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
     },
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage<SharedData>().props;
+
+    const role = auth.user?.role as keyof typeof menus | undefined;
+
+    const mainNavItems = role ? menus[role] : [];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
