@@ -19,16 +19,7 @@ import {
 
 import { dashboard } from '@/routes';
 
-const footerNavItems = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-    },
-];
+
 
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
@@ -56,7 +47,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

@@ -9,7 +9,9 @@ use App\Http\Controllers\StrategicPlanController;
 use App\Http\Controllers\SubKraController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::middleware('guest')->group(function () {
+    Route::inertia('/', 'auth/login')->name('home');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -38,4 +40,4 @@ Route::middleware(['auth', 'role:viewer'])->group(function () {
     // Route::get('/reports', [ReportController::class, 'index']);
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
