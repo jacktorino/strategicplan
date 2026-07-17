@@ -21,15 +21,15 @@ return new class extends Migration
             $table->timestamps();
             $table->enum('role', [
                         'admin',
-                        'planning_officer',
-                        'responsible_unit',
+                        'strategic_planner',
+                        'key_result_area',
                         'viewer',
                     ])->default('viewer');
 
-                    $table->foreignId('responsible_unit_id')
-                        ->nullable()
-                        ->constrained()
-                        ->nullOnDelete();
+                $table->foreignId('sub_kra_id')
+                    ->nullable()
+                    ->constrained()
+                    ->nullOnDelete();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

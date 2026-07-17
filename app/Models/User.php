@@ -17,7 +17,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
     'email',
     'password',
     'role',
-    'responsible_unit_id'
+    'sub_kra_id',
 ])]
 #[Hidden([
     'password',
@@ -38,9 +38,11 @@ class User extends Authenticatable implements PasskeyUser
         ];
     }
 
-    public function responsibleUnit()
+ 
+
+        public function subKra()
     {
-        return $this->belongsTo(ResponsibleUnit::class);
+        return $this->belongsTo(SubKra::class);
     }
 
     public function proposedKpis()

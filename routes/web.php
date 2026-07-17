@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\KpiProgressController;
@@ -24,6 +25,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('sub-kras', SubKraController::class);
     Route::resource('responsible-units', ResponsibleUnitController::class);
     // Route::resource('users', UserController::class);
+    Route::get('/admin/user', [AdminUserController::class, 'index'])->name('admin.user.index');
+    Route::get('/admin/user/create', [AdminUserController::class, 'create'])->name('admin.user.create');
 });
 
 // Route::middleware(['auth', 'role:planning_officer'])->group(function () {

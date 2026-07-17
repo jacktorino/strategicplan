@@ -8,7 +8,6 @@ class SubKra extends Model
 {
     protected $fillable = [
         'kra_id',
-        'responsible_unit_id',
         'code',
         'title',
         'description',
@@ -20,10 +19,7 @@ class SubKra extends Model
         return $this->belongsTo(Kra::class);
     }
 
-    public function responsibleUnit()
-    {
-        return $this->belongsTo(ResponsibleUnit::class);
-    }
+
 
     public function kpis()
     {

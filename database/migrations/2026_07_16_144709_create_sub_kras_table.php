@@ -18,15 +18,9 @@ return new class extends Migration
         ->constrained()
         ->cascadeOnDelete();
 
-    $table->foreignId('responsible_unit_id')
-        ->constrained()
-        ->cascadeOnDelete();
-
     $table->string('code');
 
     $table->string('title');
-
-    $table->text('description')->nullable();
 
     $table->integer('order_no')->default(1);
 

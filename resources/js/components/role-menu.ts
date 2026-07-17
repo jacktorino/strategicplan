@@ -42,7 +42,7 @@ export const menus: Record<
         },
         {
             title: 'Users',
-            href: '/users',
+            href: '/admin/user',
             icon: Users,
         },
         {

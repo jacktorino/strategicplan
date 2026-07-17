@@ -9,12 +9,16 @@ class StrategicPlanSeeder extends Seeder
 {
     public function run(): void
     {
-        StrategicPlan::create([
-            'title' => 'University Strategic Development Plan',
-            'school_year' => '2025-2030',
-            'description' => 'Five-Year Strategic Plan',
-            'status' => 'Active',
-            'created_by' => 1,
-        ]);
+        StrategicPlan::updateOrCreate(
+            [
+                'title' => 'University of the Visayas',
+                'school_year' => '2026-2027',
+            ],
+            [
+                'description' => null,
+                'status' => 'Active',
+                'created_by' => null,
+            ]
+        );
     }
 }
