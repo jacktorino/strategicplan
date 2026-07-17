@@ -8,10 +8,11 @@ import {
     FileBarChart,
     ClipboardCheck,
     ChartColumn,
+    SquarePen,
 } from 'lucide-react';
 
 export const menus: Record<
-    'admin' | 'planning_officer' | 'responsible_unit' | 'viewer',
+    'admin' | 'strategic_planner' | 'key_result_area' | 'viewer',
     NavItem[]
 > = {
     admin: [
@@ -22,7 +23,7 @@ export const menus: Record<
         },
         {
             title: 'Strategic Plans',
-            href: '/strategic-plans',
+            href: '/admin/strategic_plan',
             icon: Target,
         },
         {
@@ -52,7 +53,7 @@ export const menus: Record<
         },
     ],
 
-    planning_officer: [
+    strategic_planner: [
         {
             title: 'Dashboard',
             href: '/dashboard',
@@ -70,7 +71,7 @@ export const menus: Record<
         },
     ],
 
-    responsible_unit: [
+    key_result_area: [
         {
             title: 'Dashboard',
             href: '/dashboard',
@@ -80,6 +81,11 @@ export const menus: Record<
             title: 'My KPIs',
             href: '/kpis',
             icon: Target,
+        },
+        {
+            title: 'Propose a Kpi',
+            href: '/kpis',
+            icon: SquarePen,
         },
         {
             title: 'Progress',

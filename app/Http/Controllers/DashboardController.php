@@ -16,9 +16,9 @@ class DashboardController extends Controller
 
         'admin' => Inertia::render('Dashboard/Admin'),
 
-        'planning_officer' => Inertia::render('Dashboard/PlanningOfficer'),
+        'strategic_planner' => Inertia::render('Dashboard/PlanningOfficer'),
 
-        'responsible_unit' => Inertia::render('Dashboard/ResponsibleUnit'),
+        'key_result_area' => Inertia::render('Dashboard/ResponsibleUnit'),
 
         'viewer' => Inertia::render('Dashboard/Viewer'),
     };

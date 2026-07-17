@@ -19,8 +19,6 @@ import {
 
 import { dashboard } from '@/routes';
 
-
-
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
 
