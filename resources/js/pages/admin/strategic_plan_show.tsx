@@ -1,29 +1,72 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from 'recharts';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from '@/components/ui/accordion';
+
+const MONTH_LABELS = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+];
+
+interface KpiProgressPoint {
+    month: number; // 1-12
+    year: number;
+    percentage: number;
+}
+
+interface InnovativeActionPlan {
+    id: number;
+    kpi_id: number;
+    title: string;
+    description?: string | null;
+    start_date?: string | null;
+    end_date?: string | null;
+    expected_output?: string | null;
+}
 
 interface KPI {
     id: number;
     title: string;
+    description?: string | null;
+    responsible_units?: string[];
+    action_plans?: InnovativeActionPlan[];
+    progress?: KpiProgressPoint[];
 }
+
 interface SubKra {
     id: number;
     code: string;
     title: string;
     description: string | null;
     order_no: number;
-    kpis: KPI[]; // Add this line
+    kpis: KPI[];
 }
 
 interface Kra {
@@ -49,6 +92,119 @@ interface StrategicPlan {
 interface Props {
     plan: StrategicPlan;
     kras: Kra[];
+}
+
+function KpiProgressChart({ progress }: { progress: KpiProgressPoint[] }) {
+    if (!progress || progress.length === 0) {
+        return (
+            <p className="text-sm text-muted-foreground italic">
+                No progress data recorded yet.
+            </p>
+        );
+    }
+
+    const chartData = [...progress]
+        .sort((a, b) => a.year - b.year || a.month - b.month)
+        .map((p) => ({
+            label: MONTH_LABELS[p.month - 1] ?? `M${p.month}`,
+            percentage: p.percentage,
+        }));
+
+    return (
+        <div className="h-48 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                    data={chartData}
+                    margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                        dataKey="label"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                    />
+                    <YAxis
+                        domain={[0, 100]}
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={(v) => `${v}%`}
+                    />
+                    <Tooltip
+                        formatter={(value: number) => [`${value}%`, 'Progress']}
+                        labelClassName="text-foreground"
+                    />
+                    <Bar
+                        dataKey="percentage"
+                        radius={[4, 4, 0, 0]}
+                        fill="var(--primary)"
+                    />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
+}
+
+function KpiDetail({ kpi }: { kpi: KPI }) {
+    return (
+        <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
+            <h4 className="font-medium">
+                {kpi.description && (
+                    <span className="mr-1.5 text-muted-foreground">
+                        {kpi.description}
+                    </span>
+                )}
+                {kpi.title}
+            </h4>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <p className="mb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                        Responsible Units
+                    </p>
+                    {kpi.responsible_units &&
+                    kpi.responsible_units.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5">
+                            {kpi.responsible_units.map((unit) => (
+                                <Badge key={unit} variant="secondary">
+                                    {unit}
+                                </Badge>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm text-muted-foreground italic">
+                            None assigned
+                        </p>
+                    )}
+                </div>
+
+                <div>
+                    <p className="mb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                        Innovative Action Plans
+                    </p>
+                    {kpi.action_plans && kpi.action_plans.length > 0 ? (
+                        <ul className="list-inside list-disc space-y-0.5 text-sm">
+                            {kpi.action_plans.map((plan) => (
+                                <li key={plan.id}>{plan.title}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-sm text-muted-foreground italic">
+                            None listed
+                        </p>
+                    )}
+                </div>
+            </div>
+
+            <div>
+                <p className="mb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                    Monthly Progress
+                </p>
+                <KpiProgressChart progress={kpi.progress ?? []} />
+            </div>
+        </div>
+    );
 }
 
 export default function StrategicPlanShow({ plan, kras }: Props) {
@@ -134,76 +290,73 @@ export default function StrategicPlanShow({ plan, kras }: Props) {
                                 </CardTitle>
                             </CardHeader>
 
-                            <CardContent className="p-0">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>
-                                                Key Results Area
-                                            </TableHead>
-                                            <TableHead className="w-[180px] text-center">
-                                                KPIs
-                                            </TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-
-                                    <TableBody>
-                                        {kra.sub_kras.length > 0 ? (
-                                            kra.sub_kras.map((sub) => (
-                                                <TableRow key={sub.id}>
-                                                    <TableCell>
-                                                        <div className="font-medium">
-                                                            {sub.code}{' '}
-                                                            <span className="text-sm">
+                            <CardContent>
+                                {kra.sub_kras.length > 0 ? (
+                                    <Accordion
+                                        type="multiple"
+                                        className="w-full"
+                                    >
+                                        {kra.sub_kras.map((sub) => (
+                                            <AccordionItem
+                                                key={sub.id}
+                                                value={`sub-${sub.id}`}
+                                            >
+                                                <AccordionTrigger className="hover:no-underline">
+                                                    <div className="flex flex-1 items-center justify-between pr-4">
+                                                        <div className="text-left">
+                                                            <span className="font-medium">
+                                                                {sub.code}{' '}
+                                                            </span>
+                                                            <span className="text-sm text-muted-foreground">
                                                                 {sub.title}
                                                             </span>
                                                         </div>
-                                                    </TableCell>
 
-                                                    <TableCell className="text-center">
-                                                        <div className="flex flex-col gap-2">
-                                                            {sub.kpis.length >
-                                                            0 ? (
-                                                                <Button
-                                                                    asChild
-                                                                    variant="default"
-                                                                    size="sm"
-                                                                >
-                                                                    <Link
-                                                                        href={`/subkra/${sub.id}`}
-                                                                    >
-                                                                        View
-                                                                        KPIs (
-                                                                        {
-                                                                            sub
-                                                                                .kpis
-                                                                                .length
+                                                        <Badge
+                                                            variant="outline"
+                                                            className="ml-2 shrink-0"
+                                                        >
+                                                            {sub.kpis.length}{' '}
+                                                            KPI
+                                                            {sub.kpis.length ===
+                                                            1
+                                                                ? ''
+                                                                : 's'}
+                                                        </Badge>
+                                                    </div>
+                                                </AccordionTrigger>
+
+                                                <AccordionContent>
+                                                    {sub.kpis.length > 0 ? (
+                                                        <div className="space-y-3 pt-1">
+                                                            {sub.kpis.map(
+                                                                (kpi) => (
+                                                                    <KpiDetail
+                                                                        key={
+                                                                            kpi.id
                                                                         }
-                                                                        )
-                                                                    </Link>
-                                                                </Button>
-                                                            ) : (
-                                                                <span className="text-sm text-muted-foreground italic">
-                                                                    No KPIs
-                                                                </span>
+                                                                        kpi={
+                                                                            kpi
+                                                                        }
+                                                                    />
+                                                                ),
                                                             )}
                                                         </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
-                                        ) : (
-                                            <TableRow>
-                                                <TableCell
-                                                    colSpan={2}
-                                                    className="py-8 text-center text-muted-foreground"
-                                                >
-                                                    No Sub KRAs found for this
-                                                    area.
-                                                </TableCell>
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
-                                </Table>
+                                                    ) : (
+                                                        <p className="py-4 text-center text-sm text-muted-foreground">
+                                                            No KPIs found for
+                                                            this Sub KRA.
+                                                        </p>
+                                                    )}
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        ))}
+                                    </Accordion>
+                                ) : (
+                                    <p className="py-8 text-center text-muted-foreground">
+                                        No Sub KRAs found for this area.
+                                    </p>
+                                )}
                             </CardContent>
                         </Card>
                     ))}
