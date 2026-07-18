@@ -23,12 +23,12 @@ export const menus: Record<
         },
         {
             title: 'Strategic Plans',
-            href: '/admin/strategic_plan',
+            href: '/strategic-plans',
             icon: Target,
         },
         {
             title: 'KRAs',
-            href: '/kras',
+            href: '/kra',
             icon: FolderTree,
         },
         {
@@ -43,7 +43,7 @@ export const menus: Record<
         },
         {
             title: 'Users',
-            href: '/admin/user',
+            href: '/user',
             icon: Users,
         },
         {

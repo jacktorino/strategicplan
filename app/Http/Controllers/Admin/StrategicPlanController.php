@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\StrategicPlan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,56 +14,81 @@ class StrategicPlanController extends Controller
      */
     public function index()
     {
-          return Inertia::render('admin/strategic_plan', [
-           
+        $plans = StrategicPlan::with('creator')
+            ->withCount('kras')
+            ->latest()
+            ->get();
+
+        return Inertia::render('admin/strategic_plan', [
+            'plans' => $plans,
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'school_year' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', 'in:Draft,Active,Archived'],
+        ]);
+
+        StrategicPlan::create([
+            'title' => $validated['title'],
+            'school_year' => $validated['school_year'],
+            'description' => $validated['description'] ?? null,
+            'status' => $validated['status'],
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()
+            ->route('strategic-plans.index')
+            ->with('success', 'Strategic Plan created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(StrategicPlan $strategicPlan)
     {
-        //
+        $strategicPlan->load('creator', 'kras');
+
+        return Inertia::render('admin/strategic_plan_show', [
+            'plan' => $strategicPlan,
+        ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update the specified resource.
      */
-    public function edit(string $id)
+    public function update(Request $request, StrategicPlan $strategicPlan)
     {
-        //
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'school_year' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', 'in:Draft,Active,Archived'],
+        ]);
+
+        $strategicPlan->update($validated);
+
+        return redirect()
+            ->route('strategic-plans.index')
+            ->with('success', 'Strategic Plan updated successfully.');
     }
 
     /**
-     * Update the specified resource in storage.
+     * Remove the specified resource.
      */
-    public function update(Request $request, string $id)
+    public function destroy(StrategicPlan $strategicPlan)
     {
-        //
-    }
+        $strategicPlan->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()
+            ->route('strategic-plans.index')
+            ->with('success', 'Strategic Plan deleted successfully.');
     }
 }

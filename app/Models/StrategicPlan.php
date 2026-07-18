@@ -11,7 +11,7 @@ class StrategicPlan extends Model
         'school_year',
         'description',
         'status',
-        'created_by'
+        'created_by',
     ];
 
     public function creator()
@@ -21,6 +21,6 @@ class StrategicPlan extends Model
 
     public function kras()
     {
-        return $this->hasMany(Kra::class);
+        return $this->hasMany(Kra::class)->orderBy('order_no');
     }
 }

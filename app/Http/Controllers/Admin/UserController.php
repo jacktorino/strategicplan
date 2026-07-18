@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Inertia::render('admin/User/index', [
+        return Inertia::render('admin/user', [
             'users' => User::with('subKra')->get(),
             'subKras' => SubKra::select('id', 'code', 'title')->get(),
         ]);

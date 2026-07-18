@@ -1,17 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Models\Kra;
+use App\Models\StrategicPlan;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class KraController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $kras = Kra::with('strategicPlan')
+            ->when($request->filled('strategic_plan_id'), function ($query) use ($request) {
+                $query->where('strategic_plan_id', $request->input('strategic_plan_id'));
+            })
+            ->orderBy('order_no')
+            ->get();
+
+        return Inertia::render('admin/kra', [
+            'kras' => $kras,
+            'strategicPlans' => StrategicPlan::select('id', 'title', 'school_year')
+                ->orderBy('title')
+                ->get(),
+            'filters' => $request->only('strategic_plan_id'),
+        ]);
     }
 
     /**
