@@ -1,4 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +12,19 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { ArrowLeft, FileText } from 'lucide-react';
+
+interface KPI {
+    id: number;
+    title: string;
+}
+interface SubKra {
+    id: number;
+    code: string;
+    title: string;
+    description: string | null;
+    order_no: number;
+    kpis: KPI[]; // Add this line
+}
 
 interface Kra {
     id: number;
@@ -18,6 +32,7 @@ interface Kra {
     title: string;
     description: string | null;
     order_no: number;
+    sub_kras: SubKra[];
 }
 
 interface StrategicPlan {
@@ -26,112 +41,173 @@ interface StrategicPlan {
     school_year: string;
     description?: string;
     status: 'Draft' | 'Active' | 'Archived';
-    creator?: { name: string };
-    kras: Kra[];
+    creator?: {
+        name: string;
+    };
 }
 
 interface Props {
     plan: StrategicPlan;
+    kras: Kra[];
 }
 
-export default function StrategicPlanShow({ plan }: Props) {
+export default function StrategicPlanShow({ plan, kras }: Props) {
     return (
         <>
-            <Head title={plan.title} />
+            <Head title={`Strategic Plan - ${plan.title}`} />
 
             <div className="space-y-6 p-6">
-                <div>
-                    <Link href="/strategic-plans">
-                        <Button variant="ghost" size="sm" className="mb-4">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Back to Strategic Plans
-                        </Button>
+                {/* Breadcrumbs */}
+                <nav
+                    className="flex items-center text-sm text-muted-foreground"
+                    aria-label="Breadcrumb"
+                >
+                    <Link
+                        href="/strategic-plans"
+                        className="hover:text-foreground"
+                    >
+                        Strategic Plans
                     </Link>
+                    <ChevronRight className="mx-2 h-4 w-4" />
+                    <span className="font-medium text-foreground">
+                        Key Results Area
+                    </span>
+                </nav>
 
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
-                                {plan.title}
-                            </h1>
-                            <p className="text-muted-foreground">
-                                {plan.school_year} · Created by{' '}
-                                {plan.creator?.name ?? 'Unknown'}
-                            </p>
-                        </div>
-
-                        <Badge
-                            variant={
-                                plan.status === 'Active'
-                                    ? 'default'
-                                    : plan.status === 'Draft'
-                                      ? 'secondary'
-                                      : 'outline'
-                            }
+                {/* Header Section */}
+                <div className="flex items-start justify-between">
+                    <div>
+                        <Button
+                            asChild
+                            variant="ghost"
+                            size="sm"
+                            className="mb-3 -ml-4"
                         >
-                            {plan.status}
-                        </Badge>
+                            <Link href="/strategic-plans">
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Back
+                            </Link>
+                        </Button>
+
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            {plan.title}
+                        </h1>
+                        <p className="text-lg text-muted-foreground">
+                            Academic Year {plan.school_year}
+                        </p>
+
+                        {plan.description && (
+                            <p className="mt-4 max-w-3xl text-muted-foreground">
+                                {plan.description}
+                            </p>
+                        )}
                     </div>
 
-                    {plan.description && (
-                        <p className="mt-4 max-w-3xl text-muted-foreground">
-                            {plan.description}
-                        </p>
-                    )}
+                    <Badge
+                        variant={
+                            plan.status === 'Active'
+                                ? 'default'
+                                : plan.status === 'Draft'
+                                  ? 'secondary'
+                                  : 'outline'
+                        }
+                    >
+                        {plan.status}
+                    </Badge>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>
-                            Key Result Areas ({plan.kras.length})
-                        </CardTitle>
-                    </CardHeader>
+                {/* KRA List */}
+                <div className="space-y-4">
+                    {kras.map((kra) => (
+                        <Card key={kra.id}>
+                            <CardHeader>
+                                <CardTitle className="text-lg">
+                                    <span className="font-bold">
+                                        KRA {kra.number}
+                                    </span>{' '}
+                                    - {kra.title}
+                                    {kra.description && (
+                                        <span className="ml-2 text-sm font-normal text-muted-foreground">
+                                            ({kra.description})
+                                        </span>
+                                    )}
+                                </CardTitle>
+                            </CardHeader>
 
-                    <CardContent className="p-0">
-                        {plan.kras.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-16">
-                                <FileText className="mb-4 h-12 w-12 text-muted-foreground" />
-                                <h3 className="text-lg font-semibold">
-                                    No KRAs Yet
-                                </h3>
-                                <p className="mt-2 text-center text-sm text-muted-foreground">
-                                    This strategic plan doesn't have any Key
-                                    Result Areas defined yet.
-                                </p>
-                            </div>
-                        ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-24">
-                                            Number
-                                        </TableHead>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead className="w-24 text-center">
-                                            Order
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {plan.kras.map((kra) => (
-                                        <TableRow key={kra.id}>
-                                            <TableCell className="font-medium">
-                                                KRA {kra.number}
-                                            </TableCell>
-                                            <TableCell>{kra.title}</TableCell>
-                                            <TableCell>
-                                                {kra.description ?? '-'}
-                                            </TableCell>
-                                            <TableCell className="text-center">
-                                                {kra.order_no}
-                                            </TableCell>
+                            <CardContent className="p-0">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>
+                                                Key Results Area
+                                            </TableHead>
+                                            <TableHead className="w-[180px] text-center">
+                                                KPIs
+                                            </TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </CardContent>
-                </Card>
+                                    </TableHeader>
+
+                                    <TableBody>
+                                        {kra.sub_kras.length > 0 ? (
+                                            kra.sub_kras.map((sub) => (
+                                                <TableRow key={sub.id}>
+                                                    <TableCell>
+                                                        <div className="font-medium">
+                                                            {sub.code}{' '}
+                                                            <span className="text-sm">
+                                                                {sub.title}
+                                                            </span>
+                                                        </div>
+                                                    </TableCell>
+
+                                                    <TableCell className="text-center">
+                                                        <div className="flex flex-col gap-2">
+                                                            {sub.kpis.length >
+                                                            0 ? (
+                                                                <Button
+                                                                    asChild
+                                                                    variant="default"
+                                                                    size="sm"
+                                                                >
+                                                                    <Link
+                                                                        href={`/subkra/${sub.id}`}
+                                                                    >
+                                                                        View
+                                                                        KPIs (
+                                                                        {
+                                                                            sub
+                                                                                .kpis
+                                                                                .length
+                                                                        }
+                                                                        )
+                                                                    </Link>
+                                                                </Button>
+                                                            ) : (
+                                                                <span className="text-sm text-muted-foreground italic">
+                                                                    No KPIs
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell
+                                                    colSpan={2}
+                                                    className="py-8 text-center text-muted-foreground"
+                                                >
+                                                    No Sub KRAs found for this
+                                                    area.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
             </div>
         </>
     );

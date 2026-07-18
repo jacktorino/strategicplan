@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Models\Kpi;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class KpiController extends Controller
 {
@@ -11,7 +14,7 @@ class KpiController extends Controller
      */
     public function index()
     {
-        //
+          return Inertia::render('admin/kpi_show', []);
     }
 
     /**
@@ -33,11 +36,21 @@ class KpiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+  public function show(Kpi $kpi)
+{
+    $kpi->load([
+        'subKra',
+        'proposer',
+        'approver',
+        'responsibleUnits',
+        'actionPlans',
+        'progress',
+    ]);
 
+    return Inertia::render('admin/kpi_show', [
+        'kpi' => $kpi,
+    ]);
+}
     /**
      * Show the form for editing the specified resource.
      */

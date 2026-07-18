@@ -26,3 +26,4 @@ class SubKra extends Model
         return $this->hasMany(Kpi::class);
     }
 }
+

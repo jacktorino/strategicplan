@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kra;
 use App\Models\StrategicPlan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +16,6 @@ class StrategicPlanController extends Controller
     public function index()
     {
         $plans = StrategicPlan::with('creator')
-            ->withCount('kras')
             ->latest()
             ->get();
 
@@ -53,13 +53,25 @@ class StrategicPlanController extends Controller
      * Display the specified resource.
      */
     public function show(StrategicPlan $strategicPlan)
-    {
-        $strategicPlan->load('creator', 'kras');
+{
+    $strategicPlan->load('creator');
 
-        return Inertia::render('admin/strategic_plan_show', [
-            'plan' => $strategicPlan,
-        ]);
-    }
+    $kras = Kra::with([
+        'subKras.kpis.responsibleUnits',
+        'subKras.kpis.actionPlans',
+        'subKras.kpis.progress' => function ($query) {
+            $query->orderBy('year')
+                  ->orderBy('month');
+        },
+    ])
+    ->orderBy('order_no')
+    ->get();
+
+    return Inertia::render('admin/strategic_plan_show', [
+        'plan' => $strategicPlan,
+        'kras' => $kras,
+    ]);
+}
 
     /**
      * Update the specified resource.

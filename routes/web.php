@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\KpiController;
 use App\Http\Controllers\Admin\KraController;
 use App\Http\Controllers\Admin\StrategicPlanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KpiController;
+
 use App\Http\Controllers\KpiProgressController;
 use App\Http\Controllers\ResponsibleUnitController;
-use App\Http\Controllers\SubKraController;
+use App\Http\Controllers\Admin\SubKraController;
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes
@@ -26,8 +27,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('strategic-plans', StrategicPlanController::class);
     Route::resource('user', UserController::class);
     Route::resource('kra', KraController::class);
-    Route::resource('sub-kras', SubKraController::class);
+    Route::resource('subkra', SubKraController::class);
     Route::resource('responsible-units', ResponsibleUnitController::class);
+    Route::resource('kpi', KpiController::class);
+
 });
 
 // Strategic Planner Routes
@@ -37,7 +40,7 @@ Route::middleware(['auth', 'role:strategic_planner'])->group(function () {
 
 // Key Result Area Routes
 Route::middleware(['auth', 'role:key_result_area'])->group(function () {
-    Route::resource('kpis', KpiController::class);
+    Route::resource('kpi', KpiController::class);
     Route::resource('progress', KpiProgressController::class);
 });
 

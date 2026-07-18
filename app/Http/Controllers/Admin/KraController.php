@@ -44,7 +44,19 @@ class KraController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'strategic_plan_id' => ['required', 'exists:strategic_plans,id'],
+            'number' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'order_no' => ['required', 'integer', 'min:1'],
+        ]);
+
+        Kra::create($validated);
+
+        return redirect()
+            ->route('kra.index')
+            ->with('success', 'KRA created successfully.');
     }
 
     /**
@@ -66,9 +78,21 @@ class KraController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Kra $kra)
     {
-        //
+        $validated = $request->validate([
+            'strategic_plan_id' => ['required', 'exists:strategic_plans,id'],
+            'number' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'order_no' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $kra->update($validated);
+
+        return redirect()
+            ->route('kra.index')
+            ->with('success', 'KRA updated successfully.');
     }
 
     /**

@@ -50,19 +50,24 @@ class SubKraSeeder extends Seeder
         ];
 
         foreach ($data as $kraNumber => $subAreas) {
-            $kra = Kra::where('number', $kraNumber)->firstOrFail();
+            // Every strategic plan has its own KRA row sharing this `number`
+            // (e.g. KRA "1" exists once per academic year) — seed sub-KRAs
+            // for all of them, not just the first match.
+            $kras = Kra::where('number', $kraNumber)->get();
 
-            foreach ($subAreas as $order => $subArea) {
-                SubKra::updateOrCreate(
-                    [
-                        'kra_id' => $kra->id,
-                        'code' => $subArea['code'],
-                    ],
-                    [
-                        'title' => $subArea['title'],
-                        'order_no' => $order + 1,
-                    ]
-                );
+            foreach ($kras as $kra) {
+                foreach ($subAreas as $order => $subArea) {
+                    SubKra::updateOrCreate(
+                        [
+                            'kra_id' => $kra->id,
+                            'code' => $subArea['code'],
+                        ],
+                        [
+                            'title' => $subArea['title'],
+                            'order_no' => $order + 1,
+                        ]
+                    );
+                }
             }
         }
     }

@@ -27,21 +27,6 @@ export const menus: Record<
             icon: Target,
         },
         {
-            title: 'KRAs',
-            href: '/kra',
-            icon: FolderTree,
-        },
-        {
-            title: 'Sub KRAs',
-            href: '/sub-kras',
-            icon: FolderTree,
-        },
-        {
-            title: 'Responsible Units',
-            href: '/responsible-units',
-            icon: Building2,
-        },
-        {
             title: 'Users',
             href: '/user',
             icon: Users,

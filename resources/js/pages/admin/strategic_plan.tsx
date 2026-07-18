@@ -389,7 +389,7 @@ export default function StrategicPlan({ plans = [] }: Props) {
                 </Sheet>
 
                 {/* Search */}
-                <Card>
+                {/* <Card>
                     <CardContent className="p-4">
                         <div className="relative">
                             <Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
@@ -399,7 +399,7 @@ export default function StrategicPlan({ plans = [] }: Props) {
                             />
                         </div>
                     </CardContent>
-                </Card>
+                </Card> */}
 
                 {/* Table */}
                 <Card>
@@ -427,16 +427,16 @@ export default function StrategicPlan({ plans = [] }: Props) {
                                             <th className="px-6 py-4 text-left">
                                                 Title
                                             </th>
-                                            <th className="px-6 py-4 text-left">
+                                            <th className="px-6 py-4 text-center">
                                                 Academic Year
                                             </th>
-                                            <th className="px-6 py-4 text-left">
+                                            <th className="px-6 py-4 text-center">
                                                 Status
                                             </th>
-                                            <th className="px-6 py-4 text-left">
+                                            {/* <th className="px-6 py-4 text-left">
                                                 Created By
-                                            </th>
-                                            <th className="px-6 py-4 text-right">
+                                            </th> */}
+                                            <th className="px-6 py-4 text-center">
                                                 Actions
                                             </th>
                                         </tr>
@@ -459,11 +459,11 @@ export default function StrategicPlan({ plans = [] }: Props) {
                                                     )}
                                                 </td>
 
-                                                <td className="px-6 py-4">
+                                                <td className="flex justify-center gap-2 px-6 py-4">
                                                     {plan.school_year}
                                                 </td>
 
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 text-center">
                                                     <Badge
                                                         variant={
                                                             plan.status ===
@@ -479,12 +479,12 @@ export default function StrategicPlan({ plans = [] }: Props) {
                                                     </Badge>
                                                 </td>
 
-                                                <td className="px-6 py-4">
+                                                {/* <td className="px-6 py-4">
                                                     {plan.creator?.name ?? '-'}
-                                                </td>
+                                                </td> */}
 
                                                 <td className="px-6 py-4">
-                                                    <div className="flex justify-end gap-2">
+                                                    <div className="flex justify-center gap-2">
                                                         <Button
                                                             variant="outline"
                                                             size="icon"
