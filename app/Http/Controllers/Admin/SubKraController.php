@@ -4,142 +4,104 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kra;
-use App\Models\StrategicPlan;
 use App\Models\SubKra;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class SubKraController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        $subKras = SubKra::with([
-                'kra:id,number,title,strategic_plan_id',
-                'kra.strategicPlan:id,school_year',
-            ])
-            ->when($request->kra_id, fn ($query, $kraId) => $query->where('kra_id', $kraId))
-            ->when(
-                $request->strategic_plan_id,
-                fn ($query, $planId) => $query->whereHas(
-                    'kra',
-                    fn ($kraQuery) => $kraQuery->where('strategic_plan_id', $planId),
-                ),
-            )
-            ->orderBy('kra_id')
+        $query = SubKra::with('kra')->withCount('kpis');
+
+        if ($request->filled('kra_id')) {
+            $query->where('kra_id', $request->integer('kra_id'));
+        }
+
+        $subKras = $query
             ->orderBy('order_no')
-            ->get()
-            ->each(function ($subKra) {
-                $subKra->kra->school_year = $subKra->kra->strategicPlan->school_year ?? null;
-                unset($subKra->kra->strategicPlan);
-            });
+            ->orderBy('code')
+            ->get();
 
-        $kras = Kra::with('strategicPlan:id,school_year')
-            ->when(
-                $request->strategic_plan_id,
-                fn ($query, $planId) => $query->where('strategic_plan_id', $planId),
-            )
-            ->orderBy('strategic_plan_id')
-            ->orderBy('number')
-            ->get(['id', 'number', 'title', 'strategic_plan_id'])
-            ->map(function ($kra) {
-                return [
-                    'id' => $kra->id,
-                    'number' => $kra->number,
-                    'title' => $kra->title,
-                    'strategic_plan_id' => $kra->strategic_plan_id,
-                    'school_year' => $kra->strategicPlan->school_year ?? null,
-                ];
-            });
-
-        $strategicPlans = StrategicPlan::orderByDesc('school_year')
-            ->get(['id', 'title', 'school_year']);
-
-        return Inertia::render('admin/subkra', [
+        return Inertia::render('admin/sub-kra/index', [
             'subKras' => $subKras,
-            'kras' => $kras,
-            'strategicPlans' => $strategicPlans,
-            'filters' => $request->only('kra_id', 'strategic_plan_id'),
+            'kras' => Kra::orderBy('order_no')->orderBy('number')->get(['id', 'number', 'title']),
+            'filters' => $request->only('kra_id'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Request $request): Response
     {
-        //
+        return Inertia::render('admin/sub-kra/form', [
+            'kras' => Kra::orderBy('order_no')->orderBy('number')->get(['id', 'number', 'title']),
+            'selectedKraId' => $request->integer('kra_id') ?: null,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'kra_id' => ['required', 'exists:kras,id'],
-            'code' => ['required', 'string', 'max:20'],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'order_no' => ['nullable', 'integer', 'min:1'],
-        ]);
+        $validated = $this->validated($request);
 
         SubKra::create($validated);
 
-        return back()->with('success', 'Sub-KRA created.');
+        return to_route('subkra.index', ['kra_id' => $validated['kra_id']])
+            ->with('success', 'Sub KRA created.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-public function show(SubKra $subkra)
+    public function edit(SubKra $subkra): Response
+    {
+        return Inertia::render('admin/sub-kra/form', [
+            'subKra' => $subkra,
+            'kras' => Kra::orderBy('order_no')->orderBy('number')->get(['id', 'number', 'title']),
+        ]);
+    }
+
+    public function update(Request $request, SubKra $subkra): RedirectResponse
+    {
+        $validated = $this->validated($request);
+
+        $subkra->update($validated);
+
+        return to_route('subkra.index', ['kra_id' => $subkra->kra_id])
+            ->with('success', 'Sub KRA updated.');
+    }
+
+    public function show(SubKra $subkra): Response
 {
     $subkra->load([
         'kra',
-        'kpis',
+        'kpis.responsibleUnits',
+        'kpis.actionPlans',
+        'kpis.progress',
     ]);
 
     return Inertia::render('admin/subkra_show', [
         'subKra' => $subkra,
     ]);
 }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+
+    public function destroy(SubKra $subkra): RedirectResponse
     {
-        //
+        $kraId = $subkra->kra_id;
+
+        $subkra->delete();
+
+        return to_route('subkra.index', ['kra_id' => $kraId])
+            ->with('success', 'Sub KRA deleted.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    protected function validated(Request $request): array
     {
-        $subKra = SubKra::findOrFail($id);
-
-        $validated = $request->validate([
-            'kra_id' => ['required', 'exists:kras,id'],
-            'code' => ['required', 'string', 'max:20'],
+        // Note: the sub_kras table has no `description` column (see
+        // migration), even though the model lists it as fillable. Excluded
+        // here on purpose — add the column first if you want to store it.
+        return $request->validate([
+            'kra_id' => ['required', 'integer', 'exists:kras,id'],
+            'code' => ['required', 'string', 'max:50'],
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'order_no' => ['nullable', 'integer', 'min:1'],
+            'order_no' => ['required', 'integer', 'min:1'],
         ]);
-
-        $subKra->update($validated);
-
-        return back()->with('success', 'Sub-KRA updated.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        SubKra::findOrFail($id)->delete();
-
-        return back()->with('success', 'Sub-KRA deleted.');
     }
 }

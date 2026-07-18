@@ -4,102 +4,69 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kra;
-use App\Models\StrategicPlan;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class KraController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(): Response
     {
-        $kras = Kra::with('strategicPlan')
-            ->when($request->filled('strategic_plan_id'), function ($query) use ($request) {
-                $query->where('strategic_plan_id', $request->input('strategic_plan_id'));
-            })
+        $kras = Kra::withCount('subKras')
             ->orderBy('order_no')
+            ->orderBy('number')
             ->get();
 
-        return Inertia::render('admin/kra', [
+        return Inertia::render('admin/kra/index', [
             'kras' => $kras,
-            'strategicPlans' => StrategicPlan::select('id', 'title', 'school_year')
-                ->orderBy('title')
-                ->get(),
-            'filters' => $request->only('strategic_plan_id'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): Response
     {
-        //
+        return Inertia::render('admin/kra/form');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'strategic_plan_id' => ['required', 'exists:strategic_plans,id'],
-            'number' => ['required', 'string', 'max:255'],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'order_no' => ['required', 'integer', 'min:1'],
-        ]);
+        $validated = $this->validated($request);
 
         Kra::create($validated);
 
-        return redirect()
-            ->route('kra.index')
-            ->with('success', 'KRA created successfully.');
+        return to_route('kra.index')->with('success', 'KRA created.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Kra $kra): Response
     {
-        //
+        return Inertia::render('admin/kra/form', [
+            'kra' => $kra,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Kra $kra): RedirectResponse
     {
-        //
+        $validated = $this->validated($request, $kra);
+
+        $kra->update($validated);
+
+        return to_route('kra.index')->with('success', 'KRA updated.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Kra $kra)
+    public function destroy(Kra $kra): RedirectResponse
     {
-        $validated = $request->validate([
-            'strategic_plan_id' => ['required', 'exists:strategic_plans,id'],
-            'number' => ['required', 'string', 'max:255'],
+        $kra->delete();
+
+        return to_route('kra.index')->with('success', 'KRA deleted.');
+    }
+
+    protected function validated(Request $request, ?Kra $kra = null): array
+    {
+        return $request->validate([
+            'number' => ['required', 'string', 'max:50'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'order_no' => ['required', 'integer', 'min:1'],
         ]);
-
-        $kra->update($validated);
-
-        return redirect()
-            ->route('kra.index')
-            ->with('success', 'KRA updated successfully.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

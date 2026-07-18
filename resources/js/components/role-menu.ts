@@ -27,6 +27,21 @@ export const menus: Record<
             icon: Target,
         },
         {
+            title: 'Key Results Area',
+            href: '/kra',
+            icon: Target,
+        },
+        {
+            title: 'SubKra',
+            href: '/subkra',
+            icon: Target,
+        },
+        {
+            title: 'Kpi',
+            href: '/kpi',
+            icon: Target,
+        },
+        {
             title: 'Users',
             href: '/user',
             icon: Users,
