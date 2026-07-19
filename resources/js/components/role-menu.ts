@@ -32,18 +32,18 @@ export const menus: Record<
             icon: Target,
         },
         {
-            title: 'SubKra',
+            title: 'SUBKRA',
             href: '/subkra',
             icon: Target,
         },
         {
-            title: 'Kpi',
+            title: 'KPI',
             href: '/kpi',
             icon: Target,
         },
         {
             title: 'Users',
-            href: '/user',
+            href: '/users',
             icon: Users,
         },
         {
@@ -79,17 +79,17 @@ export const menus: Record<
         },
         {
             title: 'My KPIs',
-            href: '/kpis',
+            href: '/key-result-area/kpi',
             icon: Target,
         },
         {
             title: 'Propose a Kpi',
-            href: '/kpis',
+            href: '/key-result-area/kpi/create',
             icon: SquarePen,
         },
         {
             title: 'Progress',
-            href: '/progress',
+            href: '/key-result-area/progress',
             icon: ChartColumn,
         },
     ],

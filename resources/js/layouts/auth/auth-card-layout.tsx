@@ -24,10 +24,19 @@ export default function AuthCardLayout({
             <div className="flex w-full max-w-md flex-col gap-6">
                 <Link
                     href={home()}
-                    className="flex items-center gap-2 self-center font-medium"
+                    className="flex items-center justify-center gap-3 self-center font-medium"
                 >
-                    <div className="flex h-9 w-9 items-center justify-center">
-                        <AppLogoIcon className="size-9 fill-current text-black dark:text-white" />
+                    <div className="flex h-16 w-16 items-center justify-center">
+                        <AppLogoIcon className="size-16 fill-current text-black dark:text-white" />
+                    </div>
+
+                    <div className="text-left">
+                        <p className="text-lg leading-tight font-bold">
+                            University of the Visayas
+                        </p>
+                        <p className="text-sm leading-tight text-muted-foreground">
+                            Strategic Plan Monitoring System
+                        </p>
                     </div>
                 </Link>
 

@@ -58,6 +58,12 @@ public function share(Request $request): array
                 : null,
         ],
 
+              // 👇 ADD THIS
+        'flash' => [
+            'success' => fn () => $request->session()->get('success'),
+            'temporary_password' => fn () => $request->session()->get('temporary_password'),
+        ],
+
         'sidebarOpen' =>
             ! $request->hasCookie('sidebar_state')
             || $request->cookie('sidebar_state') === 'true',

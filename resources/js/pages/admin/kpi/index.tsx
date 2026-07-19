@@ -30,6 +30,7 @@ interface SubKraOption {
 interface KpiRow {
     id: number;
     title: string;
+    description: string;
     target: string | null;
     status: 'Pending' | 'Approved' | 'Rejected' | 'Completed';
     sub_kra_id: number;
@@ -52,6 +53,19 @@ const STATUS_VARIANT: Record<
     Approved: 'default',
     Rejected: 'destructive',
     Completed: 'outline',
+};
+
+KpiIndex.layout = {
+    breadcrumbs: [
+        {
+            title: 'KRA',
+            href: '/subkra',
+        },
+        {
+            title: 'KPI',
+            href: '/',
+        },
+    ],
 };
 
 export default function KpiIndex({ kpis, subKras, filters }: Props) {
@@ -95,12 +109,8 @@ export default function KpiIndex({ kpis, subKras, filters }: Props) {
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight">
-                                KPIs
+                                Key Performance Indicators
                             </h1>
-                            <p className="text-muted-foreground">
-                                Key performance indicators, action plans, and
-                                monthly progress.
-                            </p>
                         </div>
 
                         <Button asChild>
@@ -144,12 +154,14 @@ export default function KpiIndex({ kpis, subKras, filters }: Props) {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead>Code</TableHead>
                                 <TableHead>Title</TableHead>
-                                <TableHead>Sub KRA</TableHead>
                                 <TableHead>Target</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead className="text-center">
+                                    Status
+                                </TableHead>
                                 <TableHead>Plans / Progress</TableHead>
-                                <TableHead className="w-40 text-right">
+                                <TableHead className="w-40 text-center">
                                     Actions
                                 </TableHead>
                             </TableRow>
@@ -168,15 +180,16 @@ export default function KpiIndex({ kpis, subKras, filters }: Props) {
                                 kpis.map((kpi) => (
                                     <TableRow key={kpi.id}>
                                         <TableCell className="font-medium">
-                                            {kpi.title}
+                                            <span className="text-sm text-muted-foreground">
+                                                {kpi.description}{' '}
+                                            </span>{' '}
                                         </TableCell>
-                                        <TableCell className="text-sm text-muted-foreground">
-                                            {kpi.sub_kra.code}
-                                        </TableCell>
+                                        <TableCell> {kpi.title}</TableCell>
+
                                         <TableCell className="text-sm">
                                             {kpi.target ?? '—'}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-center">
                                             <Badge
                                                 variant={
                                                     STATUS_VARIANT[kpi.status]
@@ -195,7 +208,7 @@ export default function KpiIndex({ kpis, subKras, filters }: Props) {
                                                 ? 'y'
                                                 : 'ies'}
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-center">
                                             <Button
                                                 asChild
                                                 variant="ghost"

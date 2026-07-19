@@ -14,24 +14,34 @@ use Inertia\Response;
 
 class KpiController extends Controller
 {
-    public function index(Request $request): Response
-    {
-        $query = Kpi::with(['subKra.kra', 'responsibleUnits'])
-            ->withCount(['actionPlans', 'progress']);
+ public function index(Request $request): Response
+{
+    $query = Kpi::with(['subKra.kra', 'responsibleUnits'])
+        ->withCount(['actionPlans', 'progress']);
 
-        if ($request->filled('sub_kra_id')) {
-            $query->where('sub_kra_id', $request->integer('sub_kra_id'));
-        }
-
-        $kpis = $query->latest()->get();
-
-        return Inertia::render('admin/kpi/index', [
-            'kpis' => $kpis,
-            'subKras' => SubKra::with('kra')->orderBy('code')->get(['id', 'kra_id', 'code', 'title']),
-            'filters' => $request->only('sub_kra_id'),
-        ]);
+    if ($request->filled('sub_kra_id')) {
+        $query->where('sub_kra_id', $request->integer('sub_kra_id'));
     }
 
+    $kpis = $query->get()
+        ->sort(function ($a, $b) {
+            return version_compare($a->description, $b->description);
+        })
+        ->values();
+
+    return Inertia::render('admin/kpi/index', [
+        'kpis' => $kpis,
+        'subKras' => SubKra::with('kra')
+            ->orderBy('code')
+            ->get([
+                'id',
+                'kra_id',
+                'code',
+                'title',
+            ]),
+        'filters' => $request->only('sub_kra_id'),
+    ]);
+}
     public function create(Request $request): Response
     {
         return Inertia::render('admin/kpi/form', [

@@ -126,9 +126,9 @@ export default function KpiShow({ kpi }: Props) {
             )
         )
             return;
-       router.delete(`/progress/${entry.id}`, {
-    preserveScroll: true,
-});
+        router.delete(`/progress/${entry.id}`, {
+            preserveScroll: true,
+        });
     }
 
     const chartData = [...kpi.progress]
@@ -354,10 +354,16 @@ export default function KpiShow({ kpi }: Props) {
                                             tickFormatter={(v) => `${v}%`}
                                         />
                                         <Tooltip
-                                            formatter={(value: number) => [
-                                                `${value}%`,
-                                                'Progress',
-                                            ]}
+                                            formatter={(value) => {
+                                                const percentage =
+                                                    typeof value === 'number'
+                                                        ? value
+                                                        : Number(value ?? 0);
+                                                return [
+                                                    `${percentage}%`,
+                                                    'Progress',
+                                                ];
+                                            }}
                                         />
                                         <Bar
                                             dataKey="percentage"

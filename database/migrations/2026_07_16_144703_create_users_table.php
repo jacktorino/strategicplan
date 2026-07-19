@@ -26,10 +26,12 @@ return new class extends Migration
                         'viewer',
                     ])->default('viewer');
 
-                $table->foreignId('sub_kra_id')
-                    ->nullable()
-                    ->constrained()
-                    ->nullOnDelete();
+            // NOTE: sub_kra_id intentionally NOT added here.
+            // It's added later in add_sub_kra_id_to_users_table.php,
+            // after the sub_kras table exists, to avoid a circular
+            // foreign key dependency (users -> sub_kras -> kras ->
+            // strategic_plans -> users) that MySQL/InnoDB will not
+            // allow to be created in a single pass.
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

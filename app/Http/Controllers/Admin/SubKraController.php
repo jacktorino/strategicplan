@@ -12,26 +12,30 @@ use Inertia\Response;
 
 class SubKraController extends Controller
 {
-    public function index(Request $request): Response
-    {
-        $query = SubKra::with('kra')->withCount('kpis');
+public function index(Request $request): Response
+{
+    $query = SubKra::with('kra')
+        ->withCount('kpis');
 
-        if ($request->filled('kra_id')) {
-            $query->where('kra_id', $request->integer('kra_id'));
-        }
-
-        $subKras = $query
-            ->orderBy('order_no')
-            ->orderBy('code')
-            ->get();
-
-        return Inertia::render('admin/sub-kra/index', [
-            'subKras' => $subKras,
-            'kras' => Kra::orderBy('order_no')->orderBy('number')->get(['id', 'number', 'title']),
-            'filters' => $request->only('kra_id'),
-        ]);
+    if ($request->filled('kra_id')) {
+        $query->where('kra_id', $request->integer('kra_id'));
     }
 
+    $subKras = $query
+        ->get()
+        ->sort(function ($a, $b) {
+            return version_compare($a->code, $b->code);
+        })
+        ->values();
+
+    return Inertia::render('admin/sub-kra/index', [
+        'subKras' => $subKras,
+        'kras' => Kra::orderBy('order_no')
+            ->orderBy('number')
+            ->get(['id', 'number', 'title']),
+        'filters' => $request->only('kra_id'),
+    ]);
+}
     public function create(Request $request): Response
     {
         return Inertia::render('admin/sub-kra/form', [
