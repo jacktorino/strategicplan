@@ -104,9 +104,7 @@ export default function KeyResultAreaKpiIndex({ kpis }: Props) {
                                         </TableCell>
                                         <TableCell className="text-sm text-muted-foreground">
                                             {kpi.responsible_units
-                                                .map(
-                                                    (u) => u.acronym ?? u.name,
-                                                )
+                                                .map((u) => u.acronym ?? u.name)
                                                 .join(', ') || '—'}
                                         </TableCell>
                                         <TableCell>

@@ -49,13 +49,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->only(['store', 'update', 'destroy']);
 
     // NOTE: progress.store/update/destroy are intentionally NOT re-registered
-    // here — they're already defined below under the key_result_area group,
-    // and Laravel doesn't support two resource groups sharing the same route
-    // names cleanly (the second registration wins, silently breaking the
-    // first group's middleware). If admins also need to record progress,
-    // either widen that group's role check (e.g. `role:admin,key_result_area`
-    // if your middleware supports a role list) or move the progress routes
-    // up here instead.
+    // here — they're defined below under a shared group so both admin and
+    // key_result_area can hit the same route names (see that group's note).
 });
 
 // Strategic Planner Routes
@@ -93,11 +88,13 @@ Route::middleware(['auth', 'role:key_result_area'])
 // Progress mutations (record/edit/delete a monthly entry) are deliberately
 // registered OUTSIDE the prefixed/named group above, so the route names stay
 // the unprefixed 'progress.store' / 'progress.update' / 'progress.destroy'.
-// Both the admin KPI show page and this role's show/progress pages use
-// ProgressDialog, which posts to those exact names — nesting this resource
-// inside ->prefix('key-result-area')->name('key-result-area.') would rename
-// it to 'key-result-area.progress.store' and break both.
-Route::middleware(['auth', 'role:key_result_area'])->group(function () {
+// Both the admin KPI show page and the key_result_area show/progress pages
+// use ProgressDialog, which posts to those exact names.
+//
+// Both roles need access here (admins record/edit progress from
+// admin/kpi/show.tsx; key_result_area users do the same from their own show
+// page) — hence the combined role list rather than a single role.
+Route::middleware(['auth', 'role:admin,key_result_area'])->group(function () {
     Route::resource('progress', KpiProgressController::class)
         ->only(['store', 'update', 'destroy']);
 });
