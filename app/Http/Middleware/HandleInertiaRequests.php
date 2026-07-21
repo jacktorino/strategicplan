@@ -34,39 +34,36 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
-public function share(Request $request): array
-{
-    return [
-        ...parent::share($request),
+    public function share(Request $request): array
+    {
+        return [
+            ...parent::share($request),
 
-        'ziggy' => fn () => [
-            ...(new Ziggy)->toArray(),
-            'location' => $request->url(),
-        ],
 
-        'name' => config('app.name'),
 
-        'auth' => [
-            'user' => fn () => $request->user()
-                ? [
-                    'id' => $request->user()->id,
-                    'name' => $request->user()->name,
-                    'email' => $request->user()->email,
-                    'role' => $request->user()->role,
-                    'responsible_unit_id' => $request->user()->responsible_unit_id,
-                ]
-                : null,
-        ],
+            'name' => config('app.name'),
 
-              // 👇 ADD THIS
-        'flash' => [
-            'success' => fn () => $request->session()->get('success'),
-            'temporary_password' => fn () => $request->session()->get('temporary_password'),
-        ],
+            'auth' => [
+                'user' => fn() => $request->user()
+                    ? [
+                        'id' => $request->user()->id,
+                        'name' => $request->user()->name,
+                        'email' => $request->user()->email,
+                        'role' => $request->user()->role,
+                        'responsible_unit_id' => $request->user()->responsible_unit_id,
+                    ]
+                    : null,
+            ],
 
-        'sidebarOpen' =>
+            // 👇 ADD THIS
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'temporary_password' => fn() => $request->session()->get('temporary_password'),
+            ],
+
+            'sidebarOpen' =>
             ! $request->hasCookie('sidebar_state')
-            || $request->cookie('sidebar_state') === 'true',
-    ];
-}
+                || $request->cookie('sidebar_state') === 'true',
+        ];
+    }
 }

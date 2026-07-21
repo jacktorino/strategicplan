@@ -71,6 +71,54 @@ class KpiController extends Controller
             ->with('success', 'KPI proposed. It is now pending approval.');
     }
 
+    public function edit(Request $request, Kpi $kpi): Response
+    {
+        $user = $this->authorizedUser($request);
+
+        abort_unless($kpi->sub_kra_id === $user->sub_kra_id, 403);
+
+        $kpi->load('responsibleUnits');
+
+        return Inertia::render('key-result-area/kpi/form', [
+            'kpi' => $kpi,
+            'responsibleUnits' => ResponsibleUnit::orderBy('name')
+                ->get(['id', 'name', 'acronym']),
+        ]);
+    }
+
+
+    public function update(Request $request, Kpi $kpi): RedirectResponse
+    {
+        $user = $this->authorizedUser($request);
+
+        abort_unless($kpi->sub_kra_id === $user->sub_kra_id, 403);
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'target' => ['nullable', 'string', 'max:255'],
+            'unit_of_measure' => ['nullable', 'string', 'max:255'],
+            'remarks' => ['nullable', 'string'],
+            'responsible_unit_ids' => ['array'],
+            'responsible_unit_ids.*' => [
+                'integer',
+                'exists:responsible_units,id',
+            ],
+        ]);
+
+        $responsibleUnitIds = $validated['responsible_unit_ids'] ?? [];
+        unset($validated['responsible_unit_ids']);
+
+        $kpi->update($validated);
+        $kpi->responsibleUnits()->sync($responsibleUnitIds);
+
+        return to_route('key-result-area.kpi.show', $kpi)
+            ->with('success', 'KPI updated successfully.');
+    }
+
+
+
+
     public function show(Request $request, Kpi $kpi): Response
     {
         $user = $this->authorizedUser($request);
@@ -80,13 +128,17 @@ class KpiController extends Controller
         $kpi->load([
             'subKra.kra',
             'responsibleUnits',
-            'progress' => fn ($q) => $q->orderBy('year')->orderBy('month'),
+            'actionPlans',
+            'progress' => fn($query) => $query
+                ->orderBy('year')
+                ->orderBy('month'),
         ]);
 
         return Inertia::render('key-result-area/kpi/show', [
             'kpi' => $kpi,
         ]);
     }
+
 
     /**
      * Every action here requires the user to actually belong to a sub_kra —

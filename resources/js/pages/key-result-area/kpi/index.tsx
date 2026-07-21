@@ -14,6 +14,7 @@ import {
 
 interface KpiRow {
     id: number;
+    description:string;
     title: string;
     target: string | null;
     unit_of_measure: string | null;
@@ -91,6 +92,7 @@ export default function KeyResultAreaKpiIndex({ kpis }: Props) {
                                                 href={`/key-result-area/kpi/${kpi.id}`}
                                                 className="hover:underline"
                                             >
+                                                  {kpi.description} <br/>
                                                 {kpi.title}
                                             </Link>
                                         </TableCell>

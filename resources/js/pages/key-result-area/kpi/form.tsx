@@ -15,18 +15,35 @@ interface ResponsibleUnitOption {
     acronym: string | null;
 }
 
+interface Kpi {
+    id: number;
+    title: string;
+    description: string | null;
+    target: string | null;
+    unit_of_measure: string | null;
+    remarks: string | null;
+    responsible_units: ResponsibleUnitOption[];
+}
+
 interface Props {
+    kpi?: Kpi;
     responsibleUnits: ResponsibleUnitOption[];
 }
 
-export default function KeyResultAreaKpiForm({ responsibleUnits }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
-        title: '',
-        description: '',
-        target: '',
-        unit_of_measure: '',
-        remarks: '',
-        responsible_unit_ids: [] as number[],
+export default function KeyResultAreaKpiForm({
+    kpi,
+    responsibleUnits,
+}: Props) {
+    const isEdit = Boolean(kpi);
+
+    const { data, setData, post, put, processing, errors } = useForm({
+        title: kpi?.title ?? '',
+        description: kpi?.description ?? '',
+        target: kpi?.target ?? '',
+        unit_of_measure: kpi?.unit_of_measure ?? '',
+        remarks: kpi?.remarks ?? '',
+        responsible_unit_ids:
+            kpi?.responsible_units?.map((unit) => unit.id) ?? [],
     });
 
     function toggleUnit(unitId: number, checked: boolean) {
@@ -40,12 +57,17 @@ export default function KeyResultAreaKpiForm({ responsibleUnits }: Props) {
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        post('/key-result-area/kpi');
+
+        if (isEdit) {
+            put(`/key-result-area/kpi/${kpi!.id}`);
+        } else {
+            post('/key-result-area/kpi');
+        }
     }
 
     return (
         <>
-            <Head title="Propose a KPI" />
+            <Head title={isEdit ? 'Edit KPI' : 'Propose a KPI'} />
 
             <div className="mx-auto max-w-3xl space-y-6 p-6">
                 <div>
@@ -62,17 +84,21 @@ export default function KeyResultAreaKpiForm({ responsibleUnits }: Props) {
                     </Button>
 
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Propose a KPI
+                        {isEdit ? 'Edit KPI' : 'Propose a KPI'}
                     </h1>
-                    <p className="text-muted-foreground">
-                        Submitted KPIs start as Pending until a strategic
-                        planner reviews them.
-                    </p>
+
+                    {!isEdit && (
+                        <p className="text-muted-foreground">
+                            Submitted KPIs start as Pending until a strategic
+                            planner reviews them.
+                        </p>
+                    )}
                 </div>
 
                 <Card>
                     <CardContent className="space-y-4 pt-6">
                         <form onSubmit={handleSubmit} className="space-y-4">
+
                             <div className="space-y-2">
                                 <Label htmlFor="title">Title</Label>
                                 <Input
@@ -82,6 +108,7 @@ export default function KeyResultAreaKpiForm({ responsibleUnits }: Props) {
                                         setData('title', e.target.value)
                                     }
                                 />
+
                                 {errors.title && (
                                     <p className="text-sm text-destructive">
                                         {errors.title}
@@ -90,32 +117,37 @@ export default function KeyResultAreaKpiForm({ responsibleUnits }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description">Description</Label>
+                                <Label htmlFor="description">
+                                    Description
+                                </Label>
                                 <Textarea
                                     id="description"
                                     rows={3}
                                     value={data.description}
                                     onChange={(e) =>
-                                        setData('description', e.target.value)
+                                        setData(
+                                            'description',
+                                            e.target.value,
+                                        )
                                     }
                                 />
                             </div>
 
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="target">Target</Label>
+                                    <Label htmlFor="target">
+                                        Target
+                                    </Label>
                                     <Input
                                         id="target"
                                         value={data.target}
                                         onChange={(e) =>
-                                            setData('target', e.target.value)
+                                            setData(
+                                                'target',
+                                                e.target.value,
+                                            )
                                         }
                                     />
-                                    {errors.target && (
-                                        <p className="text-sm text-destructive">
-                                            {errors.target}
-                                        </p>
-                                    )}
                                 </div>
 
                                 <div className="space-y-2">
@@ -132,62 +164,53 @@ export default function KeyResultAreaKpiForm({ responsibleUnits }: Props) {
                                             )
                                         }
                                     />
-                                    {errors.unit_of_measure && (
-                                        <p className="text-sm text-destructive">
-                                            {errors.unit_of_measure}
-                                        </p>
-                                    )}
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="remarks">Remarks</Label>
+                                <Label htmlFor="remarks">
+                                    Remarks
+                                </Label>
                                 <Textarea
                                     id="remarks"
                                     rows={2}
                                     value={data.remarks}
                                     onChange={(e) =>
-                                        setData('remarks', e.target.value)
+                                        setData(
+                                            'remarks',
+                                            e.target.value,
+                                        )
                                     }
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Responsible units</Label>
-                                {responsibleUnits.length === 0 ? (
-                                    <p className="text-sm text-muted-foreground italic">
-                                        No responsible units set up yet.
-                                    </p>
-                                ) : (
-                                    <div className="grid gap-2 rounded-md border p-3 sm:grid-cols-2">
-                                        {responsibleUnits.map((unit) => (
-                                            <label
-                                                key={unit.id}
-                                                className="flex items-center gap-2 text-sm"
-                                            >
-                                                <Checkbox
-                                                    checked={data.responsible_unit_ids.includes(
+                                <Label>
+                                    Responsible units
+                                </Label>
+
+                                <div className="grid gap-2 rounded-md border p-3 sm:grid-cols-2">
+                                    {responsibleUnits.map((unit) => (
+                                        <label
+                                            key={unit.id}
+                                            className="flex items-center gap-2 text-sm"
+                                        >
+                                            <Checkbox
+                                                checked={data.responsible_unit_ids.includes(
+                                                    unit.id,
+                                                )}
+                                                onCheckedChange={(checked) =>
+                                                    toggleUnit(
                                                         unit.id,
-                                                    )}
-                                                    onCheckedChange={(
-                                                        checked,
-                                                    ) =>
-                                                        toggleUnit(
-                                                            unit.id,
-                                                            checked === true,
-                                                        )
-                                                    }
-                                                />
-                                                {unit.acronym ?? unit.name}
-                                            </label>
-                                        ))}
-                                    </div>
-                                )}
-                                {errors.responsible_unit_ids && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.responsible_unit_ids}
-                                    </p>
-                                )}
+                                                        checked === true,
+                                                    )
+                                                }
+                                            />
+
+                                            {unit.acronym ?? unit.name}
+                                        </label>
+                                    ))}
+                                </div>
                             </div>
 
                             <div className="flex justify-end gap-2 pt-2">
@@ -196,10 +219,14 @@ export default function KeyResultAreaKpiForm({ responsibleUnits }: Props) {
                                         Cancel
                                     </Link>
                                 </Button>
+
                                 <Button type="submit" disabled={processing}>
-                                    Submit for approval
+                                    {isEdit
+                                        ? 'Update KPI'
+                                        : 'Submit for approval'}
                                 </Button>
                             </div>
+
                         </form>
                     </CardContent>
                 </Card>

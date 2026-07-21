@@ -79,7 +79,15 @@ Route::middleware(['auth', 'role:key_result_area'])
     ->name('key-result-area.')
     ->group(function () {
         Route::resource('kpi', KeyResultAreaKpiController::class)
-            ->only(['index', 'show', 'create', 'store']);
+            ->only([
+                'index',
+                'show',
+                'create',
+                'store',
+                'edit',
+                'update',
+            ]);
+
 
         Route::get('progress', [KeyResultAreaProgressController::class, 'index'])
             ->name('progress.index');
