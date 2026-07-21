@@ -40,7 +40,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('kra', KraController::class);
     Route::resource('subkra', SubKraController::class);
-    Route::resource('responsible-units', ResponsibleUnitController::class);
     Route::resource('kpi', KpiController::class);
 
     // Action plans are managed inline from the KPI show page, so only the
