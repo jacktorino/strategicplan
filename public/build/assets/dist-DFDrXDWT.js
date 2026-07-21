@@ -1,1 +1,0 @@
-import{r as e}from"./rolldown-runtime-QTnfLwEv.js";import{d as t}from"./jsx-runtime-SnH17b4x.js";import{r as n}from"./dist-BCcHzanB.js";var r=e(t(),1),i=r.useId||(()=>void 0),a=0;function o(e){let[t,o]=r.useState(i());return n(()=>{e||o(e=>e??String(a++))},[e]),e||(t?`radix-${t}`:``)}export{o as t};
