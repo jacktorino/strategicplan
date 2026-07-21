@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ProgressController extends Controller
+class ApprovalController extends Controller
 {
     // Recording/editing/deleting entries is handled by KpiProgressController
     // (store/update/destroy, already routed under the key_result_area group).
