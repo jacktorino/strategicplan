@@ -36,22 +36,32 @@ interface Props {
 const STATUS_FILTERS = ['Pending', 'Approved', 'Rejected', 'Completed', 'all'] as const;
 
 export default function ApprovalsIndex({ kpis, filters }: Props) {
-    function handleFilter(status: string) {
-        router.get(
-            route('approvals.index'),
-            { status },
-            { preserveState: true },
-        );
-    }
+  function handleFilter(status: string) {
+    router.get(
+        '/approvals',
+        { status },
+        { preserveState: true },
+    );
+}
 
-    function approve(kpi: KpiRow) {
-        router.patch(route('approvals.approve', kpi.id), {}, { preserveScroll: true });
-    }
+function approve(kpi: KpiRow) {
+    router.patch(
+        `/approvals/${kpi.id}/approve`,
+        {},
+        { preserveScroll: true },
+    );
+}
 
-    function reject(kpi: KpiRow) {
-        if (!confirm(`Reject "${kpi.title}"?`)) return;
-        router.patch(route('approvals.reject', kpi.id), {}, { preserveScroll: true });
-    }
+function reject(kpi: KpiRow) {
+    if (!confirm(`Reject "${kpi.title}"?`)) return;
+
+    router.patch(
+        `/approvals/${kpi.id}/reject`,
+        {},
+        { preserveScroll: true },
+    );
+}
+
 
     return (
         <>
