@@ -3,13 +3,227 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActionPlan;
+use App\Models\Kpi;
+use App\Models\OrganizationalUnit;
 use App\Models\ReportingPeriod;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ActionPlanController extends Controller
 {
+
+
+public function create(Kpi $kpi): Response
+{
+    $kpi->load('subKra.kra.strategicPlan');
+
+    $organizationalUnits = OrganizationalUnit::query()
+        ->orderBy('name')
+        ->get([
+            'id',
+            'code',
+            'name',
+        ]);
+
+    return Inertia::render('ActionPlans/Create', [
+        'kpi' => [
+            'id' => $kpi->id,
+            'code' => $kpi->code,
+            'name' => $kpi->name,
+            'sub_kra' => [
+                'id' => $kpi->subKra->id,
+                'code' => $kpi->subKra->code,
+                'name' => $kpi->subKra->name,
+            ],
+            'strategic_plan' => [
+                'id' => $kpi->subKra->kra->strategicPlan->id,
+                'name' => $kpi->subKra->kra->strategicPlan->name,
+            ],
+        ],
+        'organizationalUnits' => $organizationalUnits,
+    ]);
+}
+
+
+public function store(
+    Request $request,
+    Kpi $kpi
+): RedirectResponse {
+    $validated = $request->validate([
+        'title' => [
+            'required',
+            'string',
+            'max:255',
+        ],
+
+        'description' => [
+            'nullable',
+            'string',
+            'max:5000',
+        ],
+
+
+        'organizational_unit_ids' => [
+            'nullable',
+            'array',
+        ],
+
+        'organizational_unit_ids.*' => [
+            'integer',
+            'exists:organizational_units,id',
+        ],
+    ]);
+
+    $actionPlan = $kpi->actionPlans()->create([
+        'title' => $validated['title'],
+        'description' => $validated['description'] ?? null,
+     
+    ]);
+
+    $actionPlan->responsibleUnits()->sync(
+        $validated['organizational_unit_ids'] ?? []
+    );
+
+    return redirect()
+        ->route('strategic-plans.show', [
+            'strategicPlan' => $kpi->subKra->kra->strategic_plan_id,
+        ])
+        ->with('success', 'Action Plan created successfully.');
+}
+
+
+public function edit(
+    Kpi $kpi,
+    ActionPlan $actionPlan
+): Response {
+    abort_unless(
+        $actionPlan->kpi_id === $kpi->id,
+        404
+    );
+
+    $kpi->load('subKra.kra.strategicPlan');
+
+    $actionPlan->load('responsibleUnits');
+
+    $organizationalUnits = OrganizationalUnit::query()
+        ->orderBy('name')
+        ->get([
+            'id',
+            'code',
+            'name',
+        ]);
+
+    return Inertia::render('ActionPlans/Edit', [
+        'kpi' => [
+            'id' => $kpi->id,
+            'code' => $kpi->code,
+            'name' => $kpi->name,
+            'sub_kra' => [
+                'id' => $kpi->subKra->id,
+                'code' => $kpi->subKra->code,
+                'name' => $kpi->subKra->name,
+            ],
+            'strategic_plan' => [
+                'id' => $kpi->subKra->kra->strategicPlan->id,
+                'name' => $kpi->subKra->kra->strategicPlan->name,
+            ],
+        ],
+
+        'actionPlan' => [
+            'id' => $actionPlan->id,
+            'title' => $actionPlan->title,
+            'description' => $actionPlan->description,
+
+
+            'organizational_unit_ids' =>
+                $actionPlan->responsibleUnits
+                    ->pluck('id')
+                    ->values(),
+        ],
+
+        'organizationalUnits' => $organizationalUnits,
+    ]);
+}
+
+
+public function update(
+    Request $request,
+    Kpi $kpi,
+    ActionPlan $actionPlan
+): RedirectResponse {
+    abort_unless(
+        $actionPlan->kpi_id === $kpi->id,
+        404
+    );
+
+    $validated = $request->validate([
+        'title' => [
+            'required',
+            'string',
+            'max:255',
+        ],
+
+        'description' => [
+            'nullable',
+            'string',
+            'max:5000',
+        ],
+
+
+
+        'organizational_unit_ids' => [
+            'nullable',
+            'array',
+        ],
+
+        'organizational_unit_ids.*' => [
+            'integer',
+            'exists:organizational_units,id',
+        ],
+    ]);
+
+    $actionPlan->update([
+        'title' => $validated['title'],
+        'description' => $validated['description'] ?? null,
+
+    ]);
+
+    $actionPlan->responsibleUnits()->sync(
+        $validated['organizational_unit_ids'] ?? []
+    );
+
+    return redirect()
+        ->route('strategic-plans.show', [
+            'strategicPlan' => $kpi->subKra->kra->strategic_plan_id,
+        ])
+        ->with('success', 'Action Plan updated successfully.');
+}
+
+
+public function destroy(
+    Kpi $kpi,
+    ActionPlan $actionPlan
+): RedirectResponse {
+    abort_unless(
+        $actionPlan->kpi_id === $kpi->id,
+        404
+    );
+
+    $strategicPlanId =
+        $kpi->subKra->kra->strategic_plan_id;
+
+    $actionPlan->delete();
+
+    return redirect()
+        ->route('strategic-plans.show', [
+            'strategicPlan' => $strategicPlanId,
+        ])
+        ->with('success', 'Action Plan deleted successfully.');
+}
+
+
     public function show(
         Request $request,
         ActionPlan $actionPlan
