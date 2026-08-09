@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -47,4 +48,32 @@ class User extends Authenticatable implements PasskeyUser
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+
+    public function championOfKras()
+    {
+        return $this->hasMany(Kra::class, 'champion_id');
+    }
+
+    public function ownedSubKras()
+    {
+        return $this->hasMany(SubKra::class, 'owner_id');
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(
+            ActionPlanSubmission::class,
+            'submitted_by'
+        );
+    }
+    
+    public function organizationalUnits(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            OrganizationalUnit::class,
+            'organizational_unit_user'
+        );
+    }
+
 }
