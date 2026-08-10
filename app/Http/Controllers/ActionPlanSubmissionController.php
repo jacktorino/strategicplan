@@ -19,6 +19,10 @@ class ActionPlanSubmissionController extends Controller
         ActionPlanSubmissionService $service,
         SubmissionAttachmentService $attachmentService
     ) {
+        // No policy check here: the submission doesn't exist yet, so there's
+        // nothing to authorize against. ActionPlanSubmissionService::submit()
+        // does the unit-membership check itself before creating the record.
+
         $validated = $request->validate([
             'comment' => [
                 'nullable',
@@ -43,70 +47,53 @@ class ActionPlanSubmissionController extends Controller
 
         $attachment = null;
 
-      if ($request->hasFile('file')) {
-    try {
-        $attachment = $attachmentService->attach(
-            $submission,
-            $request->file('file')
-        );
-    } catch (\Throwable $e) {
-        $submission->delete();
+        if ($request->hasFile('file')) {
+            try {
+                $attachment = $attachmentService->attach(
+                    $submission,
+                    $request->file('file'),
+                    $request->user(),
+                );
+            } catch (\Throwable $e) {
+                $submission->delete();
 
-        throw $e;
-    }
-}
+                throw $e;
+            }
+        }
 
-
-
-
-return redirect()
-    ->route('action-plans.show', [
-        'actionPlan' => $actionPlanUnit->actionPlan->id,
-        'reporting_period_id' => $reportingPeriod->id,
-    ])
-    ->with('success', 'Submission successful.');
+        return redirect()
+            ->route('action-plans.show', [
+                'actionPlan' => $actionPlanUnit->actionPlan->id,
+                'reporting_period_id' => $reportingPeriod->id,
+            ])
+            ->with('success', 'Submission successful.');
     }
 
+    public function update(
+        Request $request,
+        ActionPlanSubmission $submission
+    ) {
+        $submission->load('actionPlanUnit');
 
-public function update(
-    Request $request,
-    ActionPlanSubmission $submission
-) {
-    $submission->load('actionPlanUnit');
+        $this->authorize('update', $submission);
 
-    $isAuthorized = $request->user()
-        ->organizationalUnits()
-        ->whereKey(
-            $submission->actionPlanUnit->organizational_unit_id
-        )
-        ->exists();
+        $validated = $request->validate([
+            'comment' => [
+                'nullable',
+                'string',
+                'max:5000',
+            ],
+        ]);
 
-    if (! $isAuthorized) {
-        abort(
-            403,
-            'You are not authorized to edit this submission.'
-        );
+        $submission->update([
+            'comment' => $validated['comment'] ?? null,
+        ]);
+
+        return redirect()
+            ->route('action-plans.show', [
+                'actionPlan' => $submission->actionPlanUnit->actionPlan->id,
+                'reporting_period_id' => $submission->reporting_period_id,
+            ])
+            ->with('success', 'Comment updated successfully.');
     }
-
-    $validated = $request->validate([
-        'comment' => [
-            'nullable',
-            'string',
-            'max:5000',
-        ],
-    ]);
-
-    $submission->update([
-        'comment' => $validated['comment'] ?? null,
-    ]);
-
-    return redirect()
-        ->route('action-plans.show', [
-            'actionPlan' => $submission->actionPlanUnit->actionPlan->id,
-            'reporting_period_id' => $submission->reporting_period_id,
-        ])
-        ->with('success', 'Comment updated successfully.');
-}
-
-    
 }

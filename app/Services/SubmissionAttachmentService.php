@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\ActionPlanSubmission;
 use App\Models\SubmissionAttachment;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class SubmissionAttachmentService
@@ -29,8 +31,26 @@ class SubmissionAttachmentService
 
     public function attach(
         ActionPlanSubmission $submission,
-        UploadedFile $file
+        UploadedFile $file,
+        User $user,
     ): SubmissionAttachment {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Authorize
+        |--------------------------------------------------------------------------
+        |
+        | NOTE: if you're already calling $this->authorize('manageAttachments', $submission)
+        | in the controller (recommended — see controller-integration-notes.md),
+        | this check is redundant but harmless as defense-in-depth. If the
+        | controller doesn't call authorize(), this is what protects the route.
+        */
+
+        if (Gate::forUser($user)->denies('manageAttachments', $submission)) {
+            throw ValidationException::withMessages([
+                'submission' => 'You are not authorized to attach files to this submission.',
+            ]);
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -77,7 +97,7 @@ class SubmissionAttachmentService
         |--------------------------------------------------------------------------
         */
 
-       return $submission->attachments()->create([
+        return $submission->attachments()->create([
             'original_name' => $file->getClientOriginalName(),
             'path' => $path,
             'mime_type' => $file->getMimeType(),

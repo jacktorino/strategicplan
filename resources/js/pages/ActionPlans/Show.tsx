@@ -54,11 +54,13 @@ type ActionPlan = {
     id: number;
     title: string;
     description: string | null;
+
     kpi: {
         id: number;
         code: string;
         name: string;
     };
+
     reporting_period: ReportingPeriod;
     reporting_periods: ReportingPeriod[];
     progress: number;
@@ -76,6 +78,7 @@ export default function Show({ actionPlan }: Props) {
 
     const [comment, setComment] = useState('');
     const [file, setFile] = useState<File | null>(null);
+
     const [submittingUnitId, setSubmittingUnitId] = useState<number | null>(
         null,
     );
@@ -83,16 +86,21 @@ export default function Show({ actionPlan }: Props) {
     const [attachmentToDelete, setAttachmentToDelete] =
         useState<Attachment | null>(null);
 
-    const attachmentInputRefs = useRef<Record<number, HTMLInputElement | null>>(
-        {},
-    );
-
     const [editingSubmissionId, setEditingSubmissionId] = useState<
         number | null
     >(null);
 
     const [editingComment, setEditingComment] = useState('');
+
     const [error, setError] = useState<string | null>(null);
+
+    const attachmentInputRefs = useRef<
+        Record<number, HTMLInputElement | null>
+    >({});
+
+    const proofInputRefs = useRef<
+        Record<number, HTMLInputElement | null>
+    >({});
 
     const formatDate = (date: string) => {
         return new Date(date).toLocaleDateString('en-US', {
@@ -117,6 +125,10 @@ export default function Show({ actionPlan }: Props) {
     const changePeriod = (periodId: string) => {
         setSelectedPeriod(periodId);
 
+        setComment('');
+        setFile(null);
+        setError(null);
+
         router.get(
             `/action-plans/${actionPlan.id}`,
             {
@@ -135,12 +147,13 @@ export default function Show({ actionPlan }: Props) {
         event.preventDefault();
 
         setError(null);
-        setSubmittingUnitId(unit.id);
+
+        setSubmittingUnitId(unit.action_plan_unit_id);
 
         const formData = new FormData();
 
         if (comment.trim()) {
-            formData.append('comment', comment);
+            formData.append('comment', comment.trim());
         }
 
         if (file) {
@@ -148,16 +161,24 @@ export default function Show({ actionPlan }: Props) {
         }
 
         router.post(
-            `/action-plan-units/${unit.id}/reporting-periods/${actionPlan.reporting_period.id}/submit`,
-            {
-                comment: comment || null,
-            },
+            `/action-plan-units/${unit.action_plan_unit_id}/reporting-periods/${actionPlan.reporting_period.id}/submit`,
+            formData,
             {
                 preserveScroll: true,
+                forceFormData: true,
 
                 onSuccess: () => {
                     setComment('');
                     setFile(null);
+
+                    const input =
+                        proofInputRefs.current[
+                            unit.action_plan_unit_id
+                        ];
+
+                    if (input) {
+                        input.value = '';
+                    }
 
                     toast.success('Submission successful', {
                         description:
@@ -172,6 +193,7 @@ export default function Show({ actionPlan }: Props) {
                 onError: (errors) => {
                     const message =
                         errors.comment ??
+                        errors.file ??
                         errors.submission ??
                         errors.organizational_unit ??
                         errors.reporting_period ??
@@ -191,6 +213,7 @@ export default function Show({ actionPlan }: Props) {
             },
         );
     };
+
     return (
         <>
             <Head title={actionPlan.title} />
@@ -217,7 +240,9 @@ export default function Show({ actionPlan }: Props) {
                     {/* KPI + Reporting Period */}
                     <div className="grid gap-4 md:grid-cols-2">
                         <div className="rounded-xl border bg-card p-5 shadow-sm">
-                            <p className="text-sm text-muted-foreground">KPI</p>
+                            <p className="text-sm text-muted-foreground">
+                                KPI
+                            </p>
 
                             <p className="mt-1 font-semibold">
                                 {actionPlan.kpi.name}
@@ -244,13 +269,22 @@ export default function Show({ actionPlan }: Props) {
                                 }
                                 className="mt-2 w-full rounded-md border bg-background px-3 py-2 text-sm"
                             >
-                                {actionPlan.reporting_periods.map((period) => (
-                                    <option key={period.id} value={period.id}>
-                                        {formatDate(period.period_start)}
-                                        {' – '}
-                                        {formatDate(period.period_end)}
-                                    </option>
-                                ))}
+                                {actionPlan.reporting_periods.map(
+                                    (period) => (
+                                        <option
+                                            key={period.id}
+                                            value={period.id}
+                                        >
+                                            {formatDate(
+                                                period.period_start,
+                                            )}
+                                            {' – '}
+                                            {formatDate(
+                                                period.period_end,
+                                            )}
+                                        </option>
+                                    ),
+                                )}
                             </select>
                         </div>
                     </div>
@@ -370,11 +404,15 @@ export default function Show({ actionPlan }: Props) {
                                                 </p>
 
                                                 <p className="font-medium capitalize">
-                                                    {unit.submission.timeliness}
+                                                    {
+                                                        unit.submission
+                                                            .timeliness
+                                                    }
                                                 </p>
                                             </div>
                                         </div>
 
+                                        {/* Comment */}
                                         {unit.submission.comment && (
                                             <div>
                                                 <div className="flex items-center justify-between">
@@ -383,7 +421,8 @@ export default function Show({ actionPlan }: Props) {
                                                     </p>
 
                                                     {editingSubmissionId !==
-                                                        unit.submission.id && (
+                                                        unit.submission
+                                                            .id && (
                                                         <button
                                                             type="button"
                                                             onClick={() => {
@@ -392,6 +431,7 @@ export default function Show({ actionPlan }: Props) {
                                                                         .submission!
                                                                         .id,
                                                                 );
+
                                                                 setEditingComment(
                                                                     unit
                                                                         .submission!
@@ -413,7 +453,9 @@ export default function Show({ actionPlan }: Props) {
                                                             value={
                                                                 editingComment
                                                             }
-                                                            onChange={(event) =>
+                                                            onChange={(
+                                                                event,
+                                                            ) =>
                                                                 setEditingComment(
                                                                     event.target
                                                                         .value,
@@ -436,16 +478,24 @@ export default function Show({ actionPlan }: Props) {
                                                                                 null,
                                                                         },
                                                                         {
-                                                                            preserveScroll: true,
+                                                                            preserveScroll:
+                                                                                true,
+
                                                                             onSuccess:
                                                                                 () => {
                                                                                     setEditingSubmissionId(
                                                                                         null,
                                                                                     );
+
                                                                                     setEditingComment(
                                                                                         '',
                                                                                     );
+
+                                                                                    toast.success(
+                                                                                        'Comment updated',
+                                                                                    );
                                                                                 },
+
                                                                             onError:
                                                                                 (
                                                                                     errors,
@@ -469,6 +519,7 @@ export default function Show({ actionPlan }: Props) {
                                                                     setEditingSubmissionId(
                                                                         null,
                                                                     );
+
                                                                     setEditingComment(
                                                                         '',
                                                                     );
@@ -488,14 +539,16 @@ export default function Show({ actionPlan }: Props) {
                                                     </div>
                                                 ) : (
                                                     <p className="mt-1 text-sm">
-                                                        {unit.submission
-                                                            .comment ||
-                                                            'No comment provided.'}
+                                                        {
+                                                            unit.submission
+                                                                .comment
+                                                        }
                                                     </p>
                                                 )}
                                             </div>
                                         )}
 
+                                        {/* Attachments */}
                                         {unit.submission.attachments.length >
                                             0 && (
                                             <div>
@@ -505,7 +558,9 @@ export default function Show({ actionPlan }: Props) {
 
                                                 <div className="space-y-2">
                                                     {unit.submission.attachments.map(
-                                                        (attachment) => (
+                                                        (
+                                                            attachment,
+                                                        ) => (
                                                             <div
                                                                 key={
                                                                     attachment.id
@@ -530,6 +585,7 @@ export default function Show({ actionPlan }: Props) {
                                                                         )}
                                                                     </span>
                                                                 </a>
+
                                                                 <AlertDialog
                                                                     open={
                                                                         attachmentToDelete?.id ===
@@ -552,11 +608,11 @@ export default function Show({ actionPlan }: Props) {
                                                                     >
                                                                         <button
                                                                             type="button"
-                                                                            onClick={() => {
+                                                                            onClick={() =>
                                                                                 setAttachmentToDelete(
                                                                                     attachment,
-                                                                                );
-                                                                            }}
+                                                                                )
+                                                                            }
                                                                             className="ml-4 shrink-0 rounded-md px-3 py-1.5 text-sm font-medium text-destructive hover:bg-destructive/10"
                                                                         >
                                                                             Delete
@@ -583,7 +639,6 @@ export default function Show({ actionPlan }: Props) {
                                                                                         attachment.original_name
                                                                                     }
                                                                                 </span>
-
                                                                                 ?
                                                                                 This
                                                                                 action
@@ -605,7 +660,8 @@ export default function Show({ actionPlan }: Props) {
                                                                                     router.delete(
                                                                                         `/submission-attachments/${attachment.id}`,
                                                                                         {
-                                                                                            preserveScroll: true,
+                                                                                            preserveScroll:
+                                                                                                true,
 
                                                                                             onSuccess:
                                                                                                 () => {
@@ -647,24 +703,32 @@ export default function Show({ actionPlan }: Props) {
                                                 </div>
                                             </div>
                                         )}
+
+                                        {/* Add Supporting Document */}
                                         <form
                                             onSubmit={(event) => {
                                                 event.preventDefault();
 
-                                                const formData = new FormData();
+                                                const formData =
+                                                    new FormData();
 
                                                 const input =
                                                     event.currentTarget.elements.namedItem(
-                                                        `attachment-${unit.id}`,
+                                                        `attachment-${unit.action_plan_unit_id}`,
                                                     ) as HTMLInputElement;
 
                                                 const selectedFile =
                                                     input.files?.[0];
 
                                                 if (!selectedFile) {
-                                                    setError(
-                                                        'Please select a file.',
+                                                    toast.error(
+                                                        'No file selected',
+                                                        {
+                                                            description:
+                                                                'Please select a file.',
+                                                        },
                                                     );
+
                                                     return;
                                                 }
 
@@ -672,8 +736,6 @@ export default function Show({ actionPlan }: Props) {
                                                     'file',
                                                     selectedFile,
                                                 );
-
-                                                setError(null);
 
                                                 router.post(
                                                     `/action-plan-submissions/${unit.submission!.id}/attachments`,
@@ -686,7 +748,8 @@ export default function Show({ actionPlan }: Props) {
                                                             const input =
                                                                 attachmentInputRefs
                                                                     .current[
-                                                                    unit.id
+                                                                    unit
+                                                                        .action_plan_unit_id
                                                                 ];
 
                                                             if (input) {
@@ -723,7 +786,7 @@ export default function Show({ actionPlan }: Props) {
                                         >
                                             <div>
                                                 <label
-                                                    htmlFor={`attachment-${unit.id}`}
+                                                    htmlFor={`attachment-${unit.action_plan_unit_id}`}
                                                     className="text-sm font-medium"
                                                 >
                                                     Add Supporting Document
@@ -732,11 +795,11 @@ export default function Show({ actionPlan }: Props) {
                                                 <input
                                                     ref={(element) => {
                                                         attachmentInputRefs.current[
-                                                            unit.id
+                                                            unit.action_plan_unit_id
                                                         ] = element;
                                                     }}
-                                                    id={`attachment-${unit.id}`}
-                                                    name={`attachment-${unit.id}`}
+                                                    id={`attachment-${unit.action_plan_unit_id}`}
+                                                    name={`attachment-${unit.action_plan_unit_id}`}
                                                     type="file"
                                                     accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
                                                     className="mt-2 block w-full rounded-md border bg-background px-3 py-2 text-sm"
@@ -744,7 +807,8 @@ export default function Show({ actionPlan }: Props) {
 
                                                 <p className="mt-1 text-xs text-muted-foreground">
                                                     PDF, JPG, PNG, DOC, DOCX,
-                                                    XLS, or XLSX. Maximum 10 MB.
+                                                    XLS, or XLSX. Maximum 10
+                                                    MB.
                                                 </p>
                                             </div>
 
@@ -802,13 +866,18 @@ export default function Show({ actionPlan }: Props) {
                                             </label>
 
                                             <input
+                                                ref={(element) => {
+                                                    proofInputRefs.current[
+                                                        unit.action_plan_unit_id
+                                                    ] = element;
+                                                }}
                                                 id={`proof-${unit.action_plan_unit_id}`}
                                                 type="file"
                                                 accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
                                                 onChange={(event) =>
                                                     setFile(
-                                                        event.target
-                                                            .files?.[0] ?? null,
+                                                        event.target.files?.[0] ??
+                                                            null,
                                                     )
                                                 }
                                                 className="mt-2 block w-full rounded-md border bg-background px-3 py-2 text-sm"
@@ -852,3 +921,4 @@ export default function Show({ actionPlan }: Props) {
         </>
     );
 }
+

@@ -40,11 +40,12 @@ class OrganizationalUnit extends Model
     }
 
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            User::class,
-            'organizational_unit_user'
-        );
-    }
+  // app/Models/OrganizationalUnit.php
+public function users(): BelongsToMany
+{
+    return $this->belongsToMany(User::class, 'organizational_unit_user')
+        ->using(OrganizationalUnitUser::class)
+        ->withPivot('is_primary')
+        ->withTimestamps();
+}
 }

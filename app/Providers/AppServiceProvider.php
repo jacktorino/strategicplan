@@ -7,6 +7,14 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use App\Models\ActionPlanSubmission;
+use App\Models\Kra;
+use App\Models\SubKra;
+use App\Policies\ActionPlanSubmissionPolicy;
+use App\Policies\KraPolicy;
+use App\Policies\SubKraPolicy;
+use Illuminate\Support\Facades\Gate;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        Gate::policy(Kra::class, KraPolicy::class);
+    Gate::policy(SubKra::class, SubKraPolicy::class);
+    Gate::policy(ActionPlanSubmission::class, ActionPlanSubmissionPolicy::class);
     }
 
     /**

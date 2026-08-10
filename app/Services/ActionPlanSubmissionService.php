@@ -6,7 +6,7 @@ use App\Models\ActionPlanSubmission;
 use App\Models\ActionPlanUnit;
 use App\Models\ReportingPeriod;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -18,14 +18,12 @@ class ActionPlanSubmissionService
         User $user,
         ?string $comment = null,
     ): ActionPlanSubmission {
-
         return DB::transaction(function () use (
             $actionPlanUnit,
             $reportingPeriod,
             $user,
             $comment
         ) {
-
             /*
             |--------------------------------------------------------------------------
             | Load related models
@@ -38,9 +36,14 @@ class ActionPlanSubmissionService
             |--------------------------------------------------------------------------
             | Verify that the user belongs to the responsible organizational unit
             |--------------------------------------------------------------------------
+            |
+            | This can't go through a Policy on ActionPlanSubmission because the
+            | submission doesn't exist yet at this point — it's an authorization
+            | check on the *unit*, not the record being created.
             */
 
-            $isAuthorized = $user->organizationalUnits()
+            $isAuthorized = $user
+                ->organizationalUnits()
                 ->whereKey($actionPlanUnit->organizational_unit_id)
                 ->exists();
 
@@ -57,9 +60,15 @@ class ActionPlanSubmissionService
             |--------------------------------------------------------------------------
             */
 
+            $strategicPlanId =
+                $actionPlan->kpi
+                    ->subKra
+                    ->kra
+                    ->strategic_plan_id;
+
             if (
-                $actionPlan->kpi->subKra->kra->strategic_plan_id
-                !== $reportingPeriod->strategic_plan_id
+                $strategicPlanId !==
+                $reportingPeriod->strategic_plan_id
             ) {
                 throw ValidationException::withMessages([
                     'reporting_period' =>
@@ -69,27 +78,17 @@ class ActionPlanSubmissionService
 
             /*
             |--------------------------------------------------------------------------
-            | Check that the action plan is currently active
-            |--------------------------------------------------------------------------
-            */
-
-            $today = Carbon::today();
-
-            if (
-                $today->lt(Carbon::parse($actionPlan->start_date))
-                ||
-                $today->gt(Carbon::parse($actionPlan->end_date))
-            ) {
-                throw ValidationException::withMessages([
-                    'action_plan' =>
-                        'This action plan is not currently active.',
-                ]);
-            }
-
-            /*
-            |--------------------------------------------------------------------------
             | Determine submission window
             |--------------------------------------------------------------------------
+            |
+            | The reporting period now controls submission availability.
+            |
+            | Regular period:
+            |     period_start → period_end
+            |
+            | Late period (optional — a period may not define a late window):
+            |     late_submission_start → late_submission_end
+            |
             */
 
             $now = now();
@@ -104,7 +103,9 @@ class ActionPlanSubmissionService
             ) {
                 $timeliness = 'on_time';
             } elseif (
-                $now->between(
+                $reportingPeriod->late_submission_start
+                && $reportingPeriod->late_submission_end
+                && $now->between(
                     $reportingPeriod->late_submission_start,
                     $reportingPeriod->late_submission_end
                 )
@@ -121,16 +122,19 @@ class ActionPlanSubmissionService
             |--------------------------------------------------------------------------
             | Check duplicate submission
             |--------------------------------------------------------------------------
+            |
+            | This exists() check plus the create() below aren't atomic on their
+            | own — two near-simultaneous requests could both pass the check
+            | before either inserts. The unique constraint on
+            | (action_plan_id, action_plan_unit_id, reporting_period_id) is the
+            | real guard; this check just gives a friendlier message in the
+            | common (non-race) case. The try/catch below covers the race.
             */
 
-            $alreadySubmitted = ActionPlanSubmission::where(
-                'action_plan_unit_id',
-                $actionPlanUnit->id
-            )
-                ->where(
-                    'reporting_period_id',
-                    $reportingPeriod->id
-                )
+            $alreadySubmitted = ActionPlanSubmission::query()
+                ->where('action_plan_id', $actionPlan->id)
+                ->where('action_plan_unit_id', $actionPlanUnit->id)
+                ->where('reporting_period_id', $reportingPeriod->id)
                 ->exists();
 
             if ($alreadySubmitted) {
@@ -146,17 +150,28 @@ class ActionPlanSubmissionService
             |--------------------------------------------------------------------------
             */
 
-            return ActionPlanSubmission::create([
-                'action_plan_id' => $actionPlan->id,
-                'action_plan_unit_id' => $actionPlanUnit->id,
-                'reporting_period_id' => $reportingPeriod->id,
-                'submitted_by' => $user->id,
-                'comment' => $comment,
-                'submitted_at' => now(),
-                'status' => 'submitted',
-                'timeliness' => $timeliness,
-            ]);
+            try {
+                return ActionPlanSubmission::create([
+                    'action_plan_id' => $actionPlan->id,
+                    'action_plan_unit_id' => $actionPlanUnit->id,
+                    'reporting_period_id' => $reportingPeriod->id,
+                    'submitted_by' => $user->id,
+                    'comment' => $comment,
+                    'submitted_at' => now(),
+                    'status' => 'submitted',
+                    'timeliness' => $timeliness,
+                ]);
+            } catch (QueryException $e) {
+                // 23000 = integrity constraint violation (unique constraint hit)
+                if ($e->getCode() === '23000') {
+                    throw ValidationException::withMessages([
+                        'submission' =>
+                            'This responsible unit has already submitted for this reporting period.',
+                    ]);
+                }
+
+                throw $e;
+            }
         });
     }
 }
-

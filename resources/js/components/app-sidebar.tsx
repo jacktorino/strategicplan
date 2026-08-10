@@ -4,7 +4,6 @@ import {
     BarChart3,
     Building2,
     CalendarDays,
-    ChevronDown,
     FileCheck,
     FolderUp,
     LayoutGrid,
@@ -146,7 +145,7 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" variant="inset">
-            {/* 1. Header: Logo & Active Strategic Plan Selector */}
+            {/* 1. Header: Logo */}
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -157,16 +156,6 @@ export function AppSidebar() {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-
-                {/* Strategic Plan Selector */}
-                <div className="px-2 pt-1 group-data-[collapsible=icon]:hidden">
-                    <button className="flex w-full items-center justify-between rounded-lg border border-sidebar-border bg-sidebar-accent/50 px-3 py-1.5 text-xs font-semibold text-sidebar-foreground transition-colors hover:bg-sidebar-accent">
-                        <span className="truncate">
-                            Strategic Plan 2026–2028
-                        </span>
-                        <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-                    </button>
-                </div>
             </SidebarHeader>
 
             {/* 2. Content: Active Reporting Period Badge + Vision Progress */}

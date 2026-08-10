@@ -1174,7 +1174,7 @@ export default function Show({ strategicPlan }: Props) {
 
                 {/* Reporting Periods */}
                 <div className="space-y-4">
-                    <div>
+                    <div className="align-center flex flex-row justify-between">
                         <h2 className="text-2xl font-semibold tracking-tight">
                             Reporting Periods
                         </h2>
@@ -1182,6 +1182,19 @@ export default function Show({ strategicPlan }: Props) {
                         <p className="mt-1 text-sm text-muted-foreground">
                             Submission windows for this strategic plan.
                         </p>
+
+                        <Link
+                            href={`/strategic-plans/${strategicPlan.id}/reporting-periods`}
+                            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                        >
+                            Reporting Periods
+                        </Link>
+
+                        <Link
+                            href={`/strategic-plans/${strategicPlan.id}/submission-monitoring`}
+                        >
+                            Submission Monitoring
+                        </Link>
                     </div>
 
                     {reportingPeriods.length === 0 ? (

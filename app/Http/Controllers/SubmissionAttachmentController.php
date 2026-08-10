@@ -16,6 +16,8 @@ class SubmissionAttachmentController extends Controller
         ActionPlanSubmission $submission,
         SubmissionAttachmentService $attachmentService
     ) {
+        $this->authorize('manageAttachments', $submission);
+
         $request->validate([
             'file' => [
                 'required',
@@ -27,18 +29,10 @@ class SubmissionAttachmentController extends Controller
 
         $actionPlanUnit = $submission->actionPlanUnit;
 
-        $isAuthorized = $request->user()
-            ->organizationalUnits()
-            ->whereKey($actionPlanUnit->organizational_unit_id)
-            ->exists();
-
-        if (! $isAuthorized) {
-            abort(403, 'You are not authorized to add an attachment to this submission.');
-        }
-
         $attachment = $attachmentService->attach(
             $submission,
-            $request->file('file')
+            $request->file('file'),
+            $request->user(),
         );
 
         return redirect()
@@ -55,16 +49,7 @@ class SubmissionAttachmentController extends Controller
     ): StreamedResponse {
         $submission = $attachment->submission;
 
-        $actionPlanUnit = $submission->actionPlanUnit;
-
-        $isAuthorized = $request->user()
-            ->organizationalUnits()
-            ->whereKey($actionPlanUnit->organizational_unit_id)
-            ->exists();
-
-        if (! $isAuthorized) {
-            abort(403, 'You are not authorized to access this attachment.');
-        }
+        $this->authorize('download', $submission);
 
         if (! Storage::disk('private')->exists($attachment->path)) {
             abort(404, 'Attachment file not found.');
@@ -79,44 +64,30 @@ class SubmissionAttachmentController extends Controller
         );
     }
 
+    public function delete(
+        Request $request,
+        SubmissionAttachment $attachment
+    ) {
+        $submission = $attachment->submission;
 
-public function delete(
-    Request $request,
-    SubmissionAttachment $attachment
-) {
-    $submission = $attachment->submission;
+        $this->authorize('manageAttachments', $submission);
 
-    $actionPlanUnit = $submission->actionPlanUnit;
+        $actionPlanUnit = $submission->actionPlanUnit;
 
-    $isAuthorized = $request->user()
-        ->organizationalUnits()
-        ->whereKey($actionPlanUnit->organizational_unit_id)
-        ->exists();
+        if (Storage::disk('private')->exists($attachment->path)) {
+            Storage::disk('private')->delete($attachment->path);
+        }
 
-    if (! $isAuthorized) {
-        abort(
-            403,
-            'You are not authorized to delete this attachment.'
-        );
+        $reportingPeriodId = $submission->reporting_period_id;
+        $actionPlanId = $actionPlanUnit->actionPlan->id;
+
+        $attachment->delete();
+
+        return redirect()
+            ->route('action-plans.show', [
+                'actionPlan' => $actionPlanId,
+                'reporting_period_id' => $reportingPeriodId,
+            ])
+            ->with('success', 'Attachment deleted successfully.');
     }
-
-    if (Storage::disk('private')->exists($attachment->path)) {
-        Storage::disk('private')->delete($attachment->path);
-    }
-
-    $reportingPeriodId = $submission->reporting_period_id;
-    $actionPlanId = $actionPlanUnit->actionPlan->id;
-
-    $attachment->delete();
-
-    return redirect()
-        ->route('action-plans.show', [
-            'actionPlan' => $actionPlanId,
-            'reporting_period_id' => $reportingPeriodId,
-        ])
-        ->with('success', 'Attachment deleted successfully.');
-}
-
-
-
 }
