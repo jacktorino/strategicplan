@@ -26,4 +26,10 @@ enum UserRole: string
     {
         return [self::President, self::Admin];
     }
+
+    /** Helper to get array of all enum string values. */
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }
