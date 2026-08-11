@@ -11,9 +11,6 @@ use Illuminate\Validation\ValidationException;
 
 class SubmissionAttachmentService
 {
-    /**
-     * Allowed proof file types.
-     */
     private array $allowedMimeTypes = [
         'application/pdf',
         'image/jpeg',
@@ -24,9 +21,6 @@ class SubmissionAttachmentService
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
 
-    /**
-     * Maximum file size: 10 MB.
-     */
     private int $maxFileSize = 10 * 1024 * 1024;
 
     public function attach(
@@ -34,29 +28,11 @@ class SubmissionAttachmentService
         UploadedFile $file,
         User $user,
     ): SubmissionAttachment {
-
-        /*
-        |--------------------------------------------------------------------------
-        | Authorize
-        |--------------------------------------------------------------------------
-        |
-        | NOTE: if you're already calling $this->authorize('manageAttachments', $submission)
-        | in the controller (recommended — see controller-integration-notes.md),
-        | this check is redundant but harmless as defense-in-depth. If the
-        | controller doesn't call authorize(), this is what protects the route.
-        */
-
         if (Gate::forUser($user)->denies('manageAttachments', $submission)) {
             throw ValidationException::withMessages([
                 'submission' => 'You are not authorized to attach files to this submission.',
             ]);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Validate file
-        |--------------------------------------------------------------------------
-        */
 
         if (! $file->isValid()) {
             throw ValidationException::withMessages([
@@ -70,32 +46,16 @@ class SubmissionAttachmentService
             ]);
         }
 
-        if (! in_array(
-            $file->getMimeType(),
-            $this->allowedMimeTypes,
-            true
-        )) {
+        if (! in_array($file->getMimeType(), $this->allowedMimeTypes, true)) {
             throw ValidationException::withMessages([
                 'file' => 'This file type is not allowed.',
             ]);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Store file
-        |--------------------------------------------------------------------------
-        */
-
         $path = $file->store(
             "submissions/{$submission->id}",
             'private'
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Create attachment record
-        |--------------------------------------------------------------------------
-        */
 
         return $submission->attachments()->create([
             'original_name' => $file->getClientOriginalName(),

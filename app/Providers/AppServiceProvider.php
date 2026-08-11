@@ -31,10 +31,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->configureDefaults();
-        Gate::policy(Kra::class, KraPolicy::class);
-    Gate::policy(SubKra::class, SubKraPolicy::class);
-    Gate::policy(ActionPlanSubmission::class, ActionPlanSubmissionPolicy::class);
+      // Executive roles (President & Admin) pass all Gate checks automatically
+        Gate::before(function ($user, $ability) {
+            return $user->isExecutive() ? true : null;
+        });
     }
 
     /**

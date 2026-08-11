@@ -1,18 +1,20 @@
-export type User = {
+export interface User {
     id: number;
     name: string;
     email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    two_factor_enabled?: boolean;
-    created_at: string;
-    updated_at: string;
-    [key: string]: unknown;
-};
+    email_verified_at?: string;
+    // Spatie Roles & Permissions additions
+    roles?: string[];
+    permissions?: string[];
+    is_executive?: boolean;
+    role_label?: string;
+    created_at?: string;
+    updated_at?: string;
+}
 
-export type Auth = {
-    user: User;
-};
+export interface Auth {
+    user: User | null;
+}
 
 /* @chisel-passkeys */
 export type Passkey = {

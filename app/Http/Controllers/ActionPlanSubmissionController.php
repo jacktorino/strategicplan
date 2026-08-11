@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -7,8 +7,9 @@ use App\Models\ActionPlanUnit;
 use App\Models\ReportingPeriod;
 use App\Services\ActionPlanSubmissionService;
 use App\Services\SubmissionAttachmentService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class ActionPlanSubmissionController extends Controller
 {
@@ -18,71 +19,42 @@ class ActionPlanSubmissionController extends Controller
         ReportingPeriod $reportingPeriod,
         ActionPlanSubmissionService $service,
         SubmissionAttachmentService $attachmentService
-    ) {
-        // No policy check here: the submission doesn't exist yet, so there's
-        // nothing to authorize against. ActionPlanSubmissionService::submit()
-        // does the unit-membership check itself before creating the record.
-
+    ): RedirectResponse {
         $validated = $request->validate([
-            'comment' => [
-                'nullable',
-                'string',
-                'max:5000',
-            ],
-
-            'file' => [
-                'nullable',
-                'file',
-                'max:10240',
-                'mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx',
-            ],
+            'comment' => ['nullable', 'string', 'max:5000'],
+            'file' => ['nullable', 'file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx'],
         ]);
 
-        $submission = $service->submit(
-            actionPlanUnit: $actionPlanUnit,
-            reportingPeriod: $reportingPeriod,
-            user: $request->user(),
-            comment: $validated['comment'] ?? null,
-        );
+        DB::transaction(function () use ($request, $actionPlanUnit, $reportingPeriod, $service, $attachmentService, $validated) {
+            $submission = $service->submit(
+                actionPlanUnit: $actionPlanUnit,
+                reportingPeriod: $reportingPeriod,
+                user: $request->user(),
+                comment: $validated['comment'] ?? null,
+            );
 
-        $attachment = null;
-
-        if ($request->hasFile('file')) {
-            try {
-                $attachment = $attachmentService->attach(
+            if ($request->hasFile('file')) {
+                $attachmentService->attach(
                     $submission,
                     $request->file('file'),
                     $request->user(),
                 );
-            } catch (\Throwable $e) {
-                $submission->delete();
-
-                throw $e;
             }
-        }
+        });
 
         return redirect()
-            ->route('action-plans.show', [
-                'actionPlan' => $actionPlanUnit->actionPlan->id,
+            ->route('my-unit.action-plans', [
                 'reporting_period_id' => $reportingPeriod->id,
             ])
-            ->with('success', 'Submission successful.');
+            ->with('success', 'Submission completed successfully.');
     }
 
     public function update(
         Request $request,
         ActionPlanSubmission $submission
-    ) {
-        $submission->load('actionPlanUnit');
-
-        $this->authorize('update', $submission);
-
+    ): RedirectResponse {
         $validated = $request->validate([
-            'comment' => [
-                'nullable',
-                'string',
-                'max:5000',
-            ],
+            'comment' => ['nullable', 'string', 'max:5000'],
         ]);
 
         $submission->update([
@@ -90,10 +62,7 @@ class ActionPlanSubmissionController extends Controller
         ]);
 
         return redirect()
-            ->route('action-plans.show', [
-                'actionPlan' => $submission->actionPlanUnit->actionPlan->id,
-                'reporting_period_id' => $submission->reporting_period_id,
-            ])
-            ->with('success', 'Comment updated successfully.');
+            ->back()
+            ->with('success', 'Submission comment updated successfully.');
     }
 }

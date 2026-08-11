@@ -1,10 +1,11 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
 use App\Models\ActionPlanSubmission;
 use App\Models\SubmissionAttachment;
 use App\Services\SubmissionAttachmentService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -15,7 +16,7 @@ class SubmissionAttachmentController extends Controller
         Request $request,
         ActionPlanSubmission $submission,
         SubmissionAttachmentService $attachmentService
-    ) {
+    ): RedirectResponse {
         $this->authorize('manageAttachments', $submission);
 
         $request->validate([
@@ -27,19 +28,14 @@ class SubmissionAttachmentController extends Controller
             ],
         ]);
 
-        $actionPlanUnit = $submission->actionPlanUnit;
-
-        $attachment = $attachmentService->attach(
+        $attachmentService->attach(
             $submission,
             $request->file('file'),
             $request->user(),
         );
 
         return redirect()
-            ->route('action-plans.show', [
-                'actionPlan' => $actionPlanUnit->actionPlan->id,
-                'reporting_period_id' => $submission->reporting_period_id,
-            ])
+            ->back()
             ->with('success', 'Attachment uploaded successfully.');
     }
 
@@ -67,27 +63,19 @@ class SubmissionAttachmentController extends Controller
     public function delete(
         Request $request,
         SubmissionAttachment $attachment
-    ) {
+    ): RedirectResponse {
         $submission = $attachment->submission;
 
         $this->authorize('manageAttachments', $submission);
-
-        $actionPlanUnit = $submission->actionPlanUnit;
 
         if (Storage::disk('private')->exists($attachment->path)) {
             Storage::disk('private')->delete($attachment->path);
         }
 
-        $reportingPeriodId = $submission->reporting_period_id;
-        $actionPlanId = $actionPlanUnit->actionPlan->id;
-
         $attachment->delete();
 
         return redirect()
-            ->route('action-plans.show', [
-                'actionPlan' => $actionPlanId,
-                'reporting_period_id' => $reportingPeriodId,
-            ])
+            ->back()
             ->with('success', 'Attachment deleted successfully.');
     }
 }

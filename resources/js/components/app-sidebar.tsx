@@ -1,15 +1,15 @@
-import { usePage, Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
-    Award,
     BarChart3,
     Building2,
     CalendarDays,
     FileCheck,
     FolderUp,
+    Layers,
     LayoutGrid,
     ShieldAlert,
     Target,
-    Layers,
+    Users2Icon,
 } from 'lucide-react';
 
 import AppLogo from '@/components/app-logo';
@@ -24,19 +24,19 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { usePermission } from '@/hooks/usePermission';
 import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
+import type { NavItem, SharedData } from '@/types';
 
 type UserRole =
     'president' | 'admin' | 'kra_champion' | 'sub_kra_owner' | 'unit_head';
 
 export function AppSidebar() {
-    const { auth, activeReportingPeriod } = usePage().props as unknown as {
-        auth: { user: { name: string; email: string; role: UserRole } };
-        activeReportingPeriod?: { name: string; year: string };
-    };
+    const { hasRole, isExecutive } = usePermission();
+    const { auth } = usePage<SharedData>().props;
 
-    const userRole = auth?.user?.role || 'unit_head';
+    // Extract primary role from Spatie's user.roles array or default to unit_head
+    const userRole = (auth?.user?.roles?.[0] as UserRole) || 'unit_head';
     const overallProgress = 35; // Dynamically calculated from action_plan_submissions
 
     // Navigation routes mapped strictly to your DB structure
@@ -81,6 +81,7 @@ export function AppSidebar() {
                 href: '/organizational-units',
                 icon: Building2,
             },
+            { title: 'User Management', href: '/users', icon: Users2Icon },
         ],
 
         // 🏆 KRA Champion: Assigned via kras.champion_id
@@ -160,18 +161,8 @@ export function AppSidebar() {
 
             {/* 2. Content: Active Reporting Period Badge + Vision Progress */}
             <SidebarContent>
-                {/* Active Reporting Period Banner */}
-                <div className="mx-3 mt-2 flex items-center justify-between rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-[11px] text-muted-foreground group-data-[collapsible=icon]:hidden dark:border-slate-800 dark:bg-slate-900">
-                    <span className="font-medium">Period:</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                        {activeReportingPeriod?.name || 'Q1 2026 Active'}
-                    </span>
-                </div>
-
                 {/* Progress Bar (Visible for Executives & Champions) */}
-                {(userRole === 'president' ||
-                    userRole === 'admin' ||
-                    userRole === 'kra_champion') && (
+                {(isExecutive || hasRole('kra_champion')) && (
                     <div className="mx-3 my-2 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-xs group-data-[collapsible=icon]:hidden">
                         <div className="mb-1 flex items-center justify-between font-semibold">
                             <span className="text-[10px] tracking-wider text-muted-foreground uppercase">

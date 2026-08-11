@@ -15,14 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1. Create Roles & Permissions FIRST
+        $this->call(RoleAndPermissionSeeder::class);
+
+        // 2. Create Jack Torino SECOND
         $user = User::factory()->create([
             'name' => 'Jack Torino',
             'email' => 'jack@example.com',
         ]);
+        $user->assignRole('admin');
 
-        $this->call([
-            StrategicPlanSeeder::class,
-        ]);
+        // 3. Create Strategic Plans THIRD (uses Jack as the owner)
+        $this->call(StrategicPlanSeeder::class);
     }
 }
-

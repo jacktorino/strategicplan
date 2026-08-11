@@ -1,106 +1,53 @@
 <?php
 
-use App\Http\Controllers\ActionPlanController;
-use App\Http\Controllers\ActionPlanSubmissionController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\KraController;
+use App\Http\Controllers\MyKraController;
+use App\Http\Controllers\MySubKraController;
+use App\Http\Controllers\MyUnitController;
+use App\Http\Controllers\OrganizationalUnitController;
 use App\Http\Controllers\ReportingPeriodController;
 use App\Http\Controllers\StrategicPlanController;
-use App\Http\Controllers\StrategicPlanDashboardController;
 use App\Http\Controllers\SubKraController;
-use App\Http\Controllers\SubmissionAttachmentController;
 use App\Http\Controllers\SubmissionMonitoringController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public / Guest Routes
 Route::inertia('/', 'welcome')->name('home');
 
-// Verified Auth Routes
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
-});
-
 // Authenticated Routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::inertia('/dashboard', 'dashboard')->name('dashboard');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Strategic Plans & Dashboards
-    |--------------------------------------------------------------------------
-    */
+    // Admin User Management CRUD
+    Route::resource('users', UserController::class);
+
+    // Executive & Admin Routes
+    Route::get('/kras', [KraController::class, 'index'])->name('kras.index');
+    Route::get('/sub-kras', [SubKraController::class, 'index'])->name('sub-kras.index');
+    Route::get('/reporting-periods', [ReportingPeriodController::class, 'index'])->name('reporting-periods.index');
+    Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
     Route::get('/strategic-plans', [StrategicPlanController::class, 'index'])->name('strategic-plans.index');
-    Route::get('/strategic-plans/{strategicPlan}', [StrategicPlanController::class, 'show'])->name('strategic-plans.show');
-    Route::get('/strategic-plans/{strategicPlan}/dashboard', [StrategicPlanDashboardController::class, 'show'])->name('strategic-plans.dashboard');
-    Route::get('/strategic-plans/{strategicPlan}/submission-monitoring', [SubmissionMonitoringController::class, 'index'])->name('submission-monitoring.index');
+    Route::get('/kpis', [KpiController::class, 'index'])->name('kpis.index');
+    Route::get('/submissions/manage', [SubmissionMonitoringController::class, 'manage'])->name('submissions.manage');
+    Route::get('/organizational-units', [OrganizationalUnitController::class, 'index'])->name('organizational-units.index');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Key Result Areas (KRAs)
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/strategic-plans/{strategicPlan}/kras/create', [KraController::class, 'create'])->name('kras.create');
-    Route::post('/strategic-plans/{strategicPlan}/kras', [KraController::class, 'store'])->name('kras.store');
-    Route::get('/strategic-plans/{strategicPlan}/kras/{kra}/edit', [KraController::class, 'edit'])->name('kras.edit');
-    Route::put('/strategic-plans/{strategicPlan}/kras/{kra}', [KraController::class, 'update'])->name('kras.update');
-    Route::delete('/strategic-plans/{strategicPlan}/kras/{kra}', [KraController::class, 'destroy'])->name('kras.destroy');
+    // KRA Champion Routes
+    Route::get('/my-kra/sub-kras', [MyKraController::class, 'subKras'])->name('my-kra.sub-kras');
+    Route::get('/my-kra/kpis', [MyKraController::class, 'kpis'])->name('my-kra.kpis');
+    Route::get('/my-kra/submissions', [MyKraController::class, 'submissions'])->name('my-kra.submissions');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Sub-KRAs
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/kras/{kra}/sub-kras/create', [SubKraController::class, 'create'])->name('sub-kras.create');
-    Route::post('/kras/{kra}/sub-kras', [SubKraController::class, 'store'])->name('sub-kras.store');
-    Route::get('/kras/{kra}/sub-kras/{subKra}/edit', [SubKraController::class, 'edit'])->name('sub-kras.edit');
-    Route::put('/kras/{kra}/sub-kras/{subKra}', [SubKraController::class, 'update'])->name('sub-kras.update');
-    Route::delete('/kras/{kra}/sub-kras/{subKra}', [SubKraController::class, 'destroy'])->name('sub-kras.destroy');
+    // Sub-KRA Owner Routes
+    Route::get('/my-sub-kra/kpis', [MySubKraController::class, 'kpis'])->name('my-sub-kra.kpis');
+    Route::get('/my-sub-kra/action-plans', [MySubKraController::class, 'actionPlans'])->name('my-sub-kra.action-plans');
+    Route::get('/my-sub-kra/submissions', [MySubKraController::class, 'submissions'])->name('my-sub-kra.submissions');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Key Performance Indicators (KPIs)
-    |--------------------------------------------------------------------------
-    */
-    Route::get('sub-kras/{subKra}/kpis/create', [KpiController::class, 'create'])->name('kpis.create');
-    Route::post('sub-kras/{subKra}/kpis', [KpiController::class, 'store'])->name('kpis.store');
-    Route::get('sub-kras/{subKra}/kpis/{kpi}/edit', [KpiController::class, 'edit'])->name('kpis.edit');
-    Route::put('sub-kras/{subKra}/kpis/{kpi}', [KpiController::class, 'update'])->name('kpis.update');
-    Route::delete('sub-kras/{subKra}/kpis/{kpi}', [KpiController::class, 'destroy'])->name('kpis.destroy');
-
-    /*
-    |--------------------------------------------------------------------------
-    | Action Plans
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/kpis/{kpi}/action-plans/create', [ActionPlanController::class, 'create'])->name('action-plans.create');
-    Route::post('/kpis/{kpi}/action-plans', [ActionPlanController::class, 'store'])->name('action-plans.store');
-    Route::get('/action-plans/{actionPlan}', [ActionPlanController::class, 'show'])->name('action-plans.show');
-    Route::get('/kpis/{kpi}/action-plans/{actionPlan}/edit', [ActionPlanController::class, 'edit'])->name('action-plans.edit');
-    Route::put('/kpis/{kpi}/action-plans/{actionPlan}', [ActionPlanController::class, 'update'])->name('action-plans.update');
-    Route::delete('/kpis/{kpi}/action-plans/{actionPlan}', [ActionPlanController::class, 'destroy'])->name('action-plans.destroy');
-
-    /*
-    |--------------------------------------------------------------------------
-    | Reporting Periods
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/strategic-plans/{strategicPlan}/reporting-periods', [ReportingPeriodController::class, 'index'])->name('reporting-periods.index');
-    Route::get('/strategic-plans/{strategicPlan}/reporting-periods/create', [ReportingPeriodController::class, 'create'])->name('reporting-periods.create');
-    Route::post('/strategic-plans/{strategicPlan}/reporting-periods', [ReportingPeriodController::class, 'store'])->name('reporting-periods.store');
-    Route::get('/strategic-plans/{strategicPlan}/reporting-periods/{reportingPeriod}/edit', [ReportingPeriodController::class, 'edit'])->name('reporting-periods.edit');
-    Route::put('/strategic-plans/{strategicPlan}/reporting-periods/{reportingPeriod}', [ReportingPeriodController::class, 'update'])->name('reporting-periods.update');
-    Route::delete('/strategic-plans/{strategicPlan}/reporting-periods/{reportingPeriod}', [ReportingPeriodController::class, 'destroy'])->name('reporting-periods.destroy');
-
-    /*
-    |--------------------------------------------------------------------------
-    | Action Plan Submissions & Attachments
-    |--------------------------------------------------------------------------
-    */
-    Route::post('/action-plan-units/{actionPlanUnit}/reporting-periods/{reportingPeriod}/submit', [ActionPlanSubmissionController::class, 'store'])->name('action-plan-submissions.store');
-    Route::patch('/action-plan-submissions/{submission}', [ActionPlanSubmissionController::class, 'update'])->name('action-plan-submissions.update');
-    
-    Route::post('/action-plan-submissions/{submission}/attachments', [SubmissionAttachmentController::class, 'upload'])->name('submission-attachments.upload');
-    Route::get('/submission-attachments/{attachment}/download', [SubmissionAttachmentController::class, 'download'])->name('submission-attachments.download');
-    Route::delete('/submission-attachments/{attachment}', [SubmissionAttachmentController::class, 'delete'])->name('submission-attachments.delete');
+    // Unit Head Routes
+    Route::get('/my-unit/action-plans', [MyUnitController::class, 'actionPlans'])->name('my-unit.action-plans');
+    Route::get('/my-unit/submit', [MyUnitController::class, 'submit'])->name('my-unit.submit');
+    Route::get('/my-unit/submissions-history', [MyUnitController::class, 'submissionsHistory'])->name('my-unit.submissions-history');
 });
 
 require __DIR__.'/settings.php';

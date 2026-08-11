@@ -24,23 +24,7 @@ class ActionPlanSubmissionService
             $user,
             $comment
         ) {
-            /*
-            |--------------------------------------------------------------------------
-            | Load related models
-            |--------------------------------------------------------------------------
-            */
-
             $actionPlan = $actionPlanUnit->actionPlan;
-
-            /*
-            |--------------------------------------------------------------------------
-            | Verify that the user belongs to the responsible organizational unit
-            |--------------------------------------------------------------------------
-            |
-            | This can't go through a Policy on ActionPlanSubmission because the
-            | submission doesn't exist yet at this point — it's an authorization
-            | check on the *unit*, not the record being created.
-            */
 
             $isAuthorized = $user
                 ->organizationalUnits()
@@ -53,12 +37,6 @@ class ActionPlanSubmissionService
                         'You are not authorized to submit for this responsible unit.',
                 ]);
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | Verify that the reporting period belongs to the same strategic plan
-            |--------------------------------------------------------------------------
-            */
 
             $strategicPlanId =
                 $actionPlan->kpi
@@ -76,23 +54,7 @@ class ActionPlanSubmissionService
                 ]);
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Determine submission window
-            |--------------------------------------------------------------------------
-            |
-            | The reporting period now controls submission availability.
-            |
-            | Regular period:
-            |     period_start → period_end
-            |
-            | Late period (optional — a period may not define a late window):
-            |     late_submission_start → late_submission_end
-            |
-            */
-
             $now = now();
-
             $timeliness = null;
 
             if (
@@ -118,19 +80,6 @@ class ActionPlanSubmissionService
                 ]);
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Check duplicate submission
-            |--------------------------------------------------------------------------
-            |
-            | This exists() check plus the create() below aren't atomic on their
-            | own — two near-simultaneous requests could both pass the check
-            | before either inserts. The unique constraint on
-            | (action_plan_id, action_plan_unit_id, reporting_period_id) is the
-            | real guard; this check just gives a friendlier message in the
-            | common (non-race) case. The try/catch below covers the race.
-            */
-
             $alreadySubmitted = ActionPlanSubmission::query()
                 ->where('action_plan_id', $actionPlan->id)
                 ->where('action_plan_unit_id', $actionPlanUnit->id)
@@ -144,12 +93,6 @@ class ActionPlanSubmissionService
                 ]);
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Create submission
-            |--------------------------------------------------------------------------
-            */
-
             try {
                 return ActionPlanSubmission::create([
                     'action_plan_id' => $actionPlan->id,
@@ -162,7 +105,6 @@ class ActionPlanSubmissionService
                     'timeliness' => $timeliness,
                 ]);
             } catch (QueryException $e) {
-                // 23000 = integrity constraint violation (unique constraint hit)
                 if ($e->getCode() === '23000') {
                     throw ValidationException::withMessages([
                         'submission' =>

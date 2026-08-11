@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,13 +36,24 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
-            ...parent::share($request),
-            'name' => config('app.name'),
+        $user = $request->user();
+
+        return array_merge(parent::share($request), [
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user ? array_merge($user->toArray(), [
+                    'roles' => $user->getRoleNames(), // e.g. ['kra_champion']
+                    'permissions' => $user->getAllPermissions()->pluck('name'), // e.g. ['create kras', ...]
+                    'is_executive' => $user->isExecutive(),
+                    'role_label' => $user->role?->label(),
+                ]) : null,
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-        ];
+            // Share all role enum options for UI dropdowns
+            'enums' => [
+                'userRoles' => collect(UserRole::cases())->map(fn (UserRole $role) => [
+                    'value' => $role->value,
+                    'label' => $role->label(),
+                ]),
+            ],
+        ]);
     }
 }

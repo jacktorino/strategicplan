@@ -11,49 +11,50 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('action_plan_submissions', function (Blueprint $table) {
-                $table->id();
+        Schema::create('action_plan_submissions', function (Blueprint $table) {
+            $table->id();
 
-                $table->foreignId('action_plan_id')
-                    ->constrained()
-                    ->cascadeOnDelete();
+            $table->foreignId('action_plan_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-                $table->foreignId('action_plan_unit_id')
-                    ->constrained()
-                    ->cascadeOnDelete();
+            $table->foreignId('action_plan_unit_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-                $table->foreignId('reporting_period_id')
-                    ->constrained()
-                    ->cascadeOnDelete();
+            $table->foreignId('reporting_period_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-                $table->foreignId('submitted_by')
-                    ->constrained('users')
-                    ->cascadeOnDelete();
+            $table->foreignId('submitted_by')
+                ->constrained('users')
+                ->cascadeOnDelete();
 
-                $table->text('comment')->nullable();
+            $table->text('comment')->nullable();
 
-                $table->timestamp('submitted_at');
+            $table->timestamp('submitted_at');
 
-                $table->enum('status', [
-                    'submitted',
-                    'under_review',
-                    'accepted',
-                    'returned',
-                ])->default('submitted');
+            $table->enum('status', [
+                'submitted',
+                'under_review',
+                'accepted',
+                'returned',
+            ])->default('submitted');
 
-                $table->enum('timeliness', [
-                    'on_time',
-                    'late',
-                ])->default('on_time');
+            $table->enum('timeliness', [
+                'on_time',
+                'late',
+            ])->default('on_time');
 
-                $table->timestamps();
+            $table->timestamps();
 
-                $table->unique([
-                    'action_plan_id',
-                    'action_plan_unit_id',
-                    'reporting_period_id',
-                ]);
-            });
+            // Provide a custom short index name to avoid the MySQL 64-char limit
+            $table->unique([
+                'action_plan_id',
+                'action_plan_unit_id',
+                'reporting_period_id',
+            ], 'aps_plan_unit_period_unique');
+        });
     }
 
     /**

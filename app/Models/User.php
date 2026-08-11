@@ -15,12 +15,13 @@ use Illuminate\Support\Carbon;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $email
- * @property UserRole $role
+ * @property-read UserRole|null $role
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -30,12 +31,12 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+    use HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -48,33 +49,25 @@ class User extends Authenticatable implements PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
-            'role' => UserRole::class,
         ];
     }
 
-    public function hasRole(UserRole|string $role): bool
+    /**
+     * Get the user's primary assigned role as a UserRole Enum.
+     */
+    public function getRoleAttribute(): ?UserRole
     {
-        $role = $role instanceof UserRole ? $role : UserRole::from($role);
+        $roleName = $this->roles->first()?->name;
 
-        return $this->role === $role;
+        return $roleName ? UserRole::tryFrom($roleName) : null;
     }
 
     /**
-     * @param  array<UserRole|string>  $roles
+     * Check if user possesses an executive role.
      */
-    public function hasAnyRole(array $roles): bool
-    {
-        $roles = array_map(
-            fn ($r) => $r instanceof UserRole ? $r : UserRole::from($r),
-            $roles
-        );
-
-        return in_array($this->role, $roles, true);
-    }
-
     public function isExecutive(): bool
     {
-        return in_array($this->role, UserRole::executive(), true);
+        return $this->hasRole(UserRole::executive());
     }
 
     public function championOfKras()
@@ -95,11 +88,11 @@ class User extends Authenticatable implements PasskeyUser
         );
     }
 
-   public function organizationalUnits(): BelongsToMany
-{
-    return $this->belongsToMany(OrganizationalUnit::class, 'organizational_unit_user')
-        ->using(OrganizationalUnitUser::class)
-        ->withPivot('is_primary')
-        ->withTimestamps();
-}
+    public function organizationalUnits(): BelongsToMany
+    {
+        return $this->belongsToMany(OrganizationalUnit::class, 'organizational_unit_user')
+            ->using(OrganizationalUnitUser::class)
+            ->withPivot('is_primary')
+            ->withTimestamps();
+    }
 }
