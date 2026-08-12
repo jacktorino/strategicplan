@@ -70,7 +70,6 @@ class StrategicPlanSeeder extends Seeder
         'DQMR' => ['name' => 'Deputy Quality Management Representatives', 'parent' => 'NONACADEMIC'],
         'EDTECH' => ['name' => 'Educational Technology Office', 'parent' => 'NONACADEMIC'],
         'CIE' => ['name' => 'Center for Innovative Education', 'parent' => 'NONACADEMIC'],
-        
 
         // Not shown on the Assign Units screen, but referenced in the
         // source strategic plan document.
@@ -287,9 +286,8 @@ class StrategicPlanSeeder extends Seeder
 
     /**
      * Full KRA / Sub-KRA / KPI / Action Plan structure transcribed from the
-     * UV Strategic Plan AY 2023-2026. Targets for AY 2023-2024, 2024-2025,
-     * and 2025-2026 are summarized inside each KPI's description since the
-     * schema does not have dedicated per-year target columns.
+     * UV Strategic Plan AY 2023-2026. Action plan titles are taken verbatim
+     * from the "Innovative Action Plan" column of the source document.
      */
     private function planData(): array
     {
@@ -309,35 +307,39 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Governance',
                         'kpis' => [
                             '1.1.1' => [
-                                'name' => 'Deployment and dissemination of VMO and Quality Management System in all units',
+                                'name' => 'Deployment and dissemination of VMO, Quality Management System in all units',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Publish VMO on website, social media, and campus signage', 'units' => ['CPAD', 'QMSO', 'FMD']],
-                                    ['title' => 'Publish PQF Levels 6-8 Descriptors and UV Institutional Learning Outcomes', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Integrate VMO into course syllabi and program activities', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Integrate VMO into class orientation and unit meetings', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Upload the VMO in the website, official social media accounts, and post in the conspicuous places/areas in the University Campuses.', 'units' => ['CPAD', 'QMSO', 'FMD']],
+                                    ['title' => 'Upload the PQF Levels 6-8 Descriptors and the UV Institutional Learning Outcomes in the website, official social media accounts, and post in the conspicuous places/areas in the University Campuses', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Integrate in the course syllabi and activities of all programs across campuses, colleges and units.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Integration in all classes\' orientation and recitation in all units\' regular meetings.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '1.1.2' => [
-                                'name' => 'Alignment and dissemination of the 17 UN Sustainable Development Goals in all university operations',
+                                'name' => 'Alignment and dissemination of 17 UN Sustainable Development Goals in all university operations.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Publish the 17 UN SDGs on website, social media, and campus signage', 'units' => ['CPAD', 'QMSO', 'FMD']],
-                                    ['title' => 'Integrate SDGs into course syllabi and program activities', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Integrate SDGs into class orientation and unit meetings', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Upload the 17 UNSDG in the website, official social media accounts, and post in the conspicuous places/areas in the University Campuses.', 'units' => ['CPAD', 'QMSO', 'FMD']],
+                                    ['title' => 'Integrate in the course syllabi and activities of all programs across campuses, colleges and units.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Integration in all classes\' orientation and recitation in all units\' regular meetings.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '1.1.3' => [
-                                'name' => 'Senior Leaders and stakeholders participate in the Quality Assurance Review and Planning',
+                                'name' => '100% of Senior Leaders and other stakeholders participate in the Quality Assurance Review and Planning.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Participate actively in scheduled QA Review and Planning', 'units' => ['ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Regularly recognize stakeholder contributions', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Senior leaders and stakeholders participate actively in the scheduled Quality Assurance Review and Planning towards continuous improvement and stakeholder\'s satisfaction.', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Regularly recognize the valuable contribution of the stakeholders.', 'units' => ['ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                             '1.1.4' => [
-                                'name' => 'Compliance with National Privacy Commission requirements',
+                                'name' => 'Compliance with the National Privacy Commission requirements',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Undertake data privacy audit procedures', 'units' => ['ACADEMIC', 'NONACADEMIC', 'DPO']],
-                                    ['title' => 'Implement employee data privacy awareness program', 'units' => ['ACADEMIC', 'NONACADEMIC', 'DPO']],
-                                    ['title' => 'Install data security software on university devices', 'units' => ['ICTD', 'FAD', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Undertake audit procedures on data privacy', 'units' => ['ACADEMIC', 'NONACADEMIC', 'DPO']],
+                                    ['title' => 'Implement Awareness Program for employees to improve privacy knowledge, skills, attitude, and behavior.', 'units' => ['ACADEMIC', 'NONACADEMIC', 'DPO']],
+                                    ['title' => 'Install much-needed security software\'s to protect data on all devices used in the University and its satellite campuses.', 'units' => ['ICTD', 'FAD', 'ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                         ],
@@ -347,24 +349,27 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Leadership',
                         'kpis' => [
                             '1.2.1' => [
-                                'name' => 'Involvement of all senior leaders in University Committee Leadership / Membership',
+                                'name' => '100% involvement of all senior leaders in University Committee Leadership/Memberships',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Ensure every senior leader chairs, vice-chairs, or is a member of at least one committee', 'units' => ['ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Assign assistants/associates to sustain committee chairmanship continuity', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Senior Leaders should chair/vice chair/member of at least one (1) university/college committee.', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Ensure continuity of involvement in university committee leaderships memberships by assigning assistants or associates to every senior leader occupying chairmanship positions in various committees', 'units' => ['ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                             '1.2.2' => [
-                                'name' => 'Involvement in the 5S program',
+                                'name' => '100% involvement in 5S program',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct periodic 5S implementation audits across all campuses', 'units' => ['ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Conduct capacity-building for 5S implementers', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Conduct periodic implementation audit of 5S in the different units across all campuses.', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Conduct Capacity-Building for 5S Implementers', 'units' => ['ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                             '1.2.3' => [
-                                'name' => 'Involvement of all employees in the Quality Circles',
+                                'name' => '100% involvement of all employees in the Quality Circles',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Orient employees on Quality Circle policies and procedures', 'units' => ['ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Deploy Quality Circle policies and procedures', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Organize and orient employees on the policies and procedures of the University Quality Circles.', 'units' => ['ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Deployment of the policies and procedures of the University Quality Circles', 'units' => ['ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                         ],
@@ -374,18 +379,20 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Human Resources Learning and Development',
                         'kpis' => [
                             '1.3.1' => [
-                                'name' => 'University-wide learning and development program participation (non-teaching)',
+                                'name' => '100% participation in university-wide learning and development program',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct training needs assessment for non-teaching learning and development plan', 'units' => ['HRD']],
-                                    ['title' => 'Complete at least one online training/webinar aligned to job function', 'units' => ['NONACADEMIC']],
+                                    ['title' => 'Conduct training needs assessment as a basis in crafting the learning and development program for non-teaching', 'units' => ['HRD']],
+                                    ['title' => 'Attend and complete at least one online training/webinar aligned to the job function.', 'units' => ['NONACADEMIC']],
                                 ],
                             ],
                             '1.3.2' => [
-                                'name' => 'Academic development participation in the unit faculty program',
+                                'name' => '100% academic development participation in unit faculty program',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct training needs assessment for faculty development plan', 'units' => ['ACADEMIC', 'HRD']],
-                                    ['title' => 'Attend at least one online training/webinar aligned to field of specialization', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Implement Faculty Immersion Program during Special Period', 'units' => ['ACADEMIC', 'HRD']],
+                                    ['title' => 'Conduct training assessment as basis crafting of the development program needs in the faculty', 'units' => ['ACADEMIC', 'HRD']],
+                                    ['title' => 'Attendance to at least one online training or webinar aligned to the field of specialization', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Include Faculty Immersion program and have it implemented during Special Period', 'units' => ['ACADEMIC', 'HRD']],
                                 ],
                             ],
                         ],
@@ -395,10 +402,11 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Communication',
                         'kpis' => [
                             '1.4.1' => [
-                                'name' => 'Deployment of internal and external communication guidelines/protocols',
+                                'name' => '100% deployment of internal and external communication guidelines/protocols.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Customize Office 365 for secure inter-office communication', 'units' => ['CPAD', 'ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Establish a contingency communication plan for unexpected challenges', 'units' => ['CPAD', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Efficient and regular use of corporate emails and online systems in inter-office communication by customizing Office 365 features and applications for a secured and reliable communication processes', 'units' => ['CPAD', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Establish a contingency communication plan with due consideration on security for unexpected challenges', 'units' => ['CPAD', 'ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                         ],
@@ -408,15 +416,17 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Physical Plant and Facilities',
                         'kpis' => [
                             '1.5.1' => [
-                                'name' => 'Completion of the 3-year campus development plan',
+                                'name' => '100% completion in crafting the 3-year campus development plan.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Prepare the campus development plan', 'units' => ['FMD']],
+                                    ['title' => 'Prepare a campus development plan.', 'units' => ['FMD']],
                                 ],
                             ],
                             '1.5.2' => [
-                                'name' => 'Implementation of the 3-year campus development plan',
+                                'name' => 'Implementation of the 3-year campus development plan.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Monitor campus development plan implementation', 'units' => ['FMD']],
+                                    ['title' => 'Monitoring of the campus development plan implementation.', 'units' => ['FMD']],
                                 ],
                             ],
                         ],
@@ -426,17 +436,19 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'ICT',
                         'kpis' => [
                             '1.6.1' => [
-                                'name' => 'Up-to-date, innovative, user-friendly and functional website and automation systems',
+                                'name' => '100% up to date, innovative and user friendly, functional website and automation systems',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Maintain a regularly updated website and automation system', 'units' => ['ICTD', 'CPAD', 'ACADEMIC']],
+                                    ['title' => 'Maintain regularly an updated website and automation system', 'units' => ['ICTD', 'CPAD', 'ACADEMIC']],
                                 ],
                             ],
                             '1.6.2' => [
-                                'name' => 'Improvement of ICT network infrastructure capability',
+                                'name' => '100% improvement of ICT network infrastructure capability',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Maintain a regularly upgraded IT infrastructure', 'units' => ['ICTD', 'FAD']],
-                                    ['title' => 'Install security software on all university devices and satellite campuses', 'units' => ['ICTD', 'FAD', 'ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Host secured systems over the cloud', 'units' => ['ICTD', 'FAD', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Maintain regularly an upgraded IT infrastructure', 'units' => ['ICTD', 'FAD']],
+                                    ['title' => 'Install much-needed security software\'s to protect data on all devices used in the University and its satellite campuses.', 'units' => ['ICTD', 'FAD', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Host secured systems over the cloud.', 'units' => ['ICTD', 'FAD', 'ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                         ],
@@ -446,27 +458,30 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Finance',
                         'kpis' => [
                             '1.7.1' => [
-                                'name' => 'Increase accounts receivable collection efficiency to 98%',
+                                'name' => 'Increase accounts Receivable collection efficiency to 98%.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Deploy cashless payment scheme efficiently', 'units' => ['FAD', 'ACADEMIC']],
-                                    ['title' => 'Closely monitor student accounts and send consistent reminders', 'units' => ['FAD']],
-                                    ['title' => 'Strengthen partnerships with financing intermediaries offering student loans', 'units' => ['FAD']],
-                                    ['title' => 'Integrate available payment channels into the Enrolment system', 'units' => ['FAD', 'ICTD']],
-                                    ['title' => 'Create a University Communication System to update students on school fees', 'units' => ['FAD', 'ICTD', 'ACADEMIC']],
+                                    ['title' => 'Efficient deployment of cashless payment scheme', 'units' => ['FAD', 'ACADEMIC']],
+                                    ['title' => 'Close monitoring of students\' accounts and consistent reminders to students', 'units' => ['FAD']],
+                                    ['title' => 'Strengthen partnership/linkages with financing intermediaries who could offer educational loans to students', 'units' => ['FAD']],
+                                    ['title' => 'Integrate the available payment channels in the Enrolment system', 'units' => ['FAD', 'ICTD']],
+                                    ['title' => 'Create a University Communication System to update students on their school fees.', 'units' => ['FAD', 'ICTD', 'ACADEMIC']],
                                 ],
                             ],
                             '1.7.2' => [
-                                'name' => 'Zero complaints of late posting or unposted online payments daily',
+                                'name' => 'Zero complain from students of late posting or unposted online payments every day.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Monitor the daily status report of online collections', 'units' => ['FAD', 'ICTD']],
+                                    ['title' => 'Monitor daily status report of online collections to ensure on time and accurate posting of student online payments.', 'units' => ['FAD', 'ICTD']],
                                 ],
                             ],
                             '1.7.3' => [
                                 'name' => 'Utilization of resources based on approved budget for all units',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Monitor actual expenditures versus approved budget', 'units' => ['FAD', 'ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Integrate the purchasing system with the existing accounting system (Ledgea)', 'units' => ['FAD', 'ICTD']],
-                                    ['title' => 'Submit weekly Purchase Monitoring Sheet to track request status', 'units' => ['FAD', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Monitoring of the actual expenditures versus approved budget', 'units' => ['FAD', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Create and integrate the purchasing system to the existing accounting system (Ledgea)', 'units' => ['FAD', 'ICTD']],
+                                    ['title' => 'Submission of weekly Purchase monitoring sheet to track status of request.', 'units' => ['FAD', 'ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                         ],
@@ -476,45 +491,52 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Accreditation and Certification',
                         'kpis' => [
                             '1.8.1' => [
-                                'name' => 'Compliance with Institutional Sustainability Assessment (ISA) Standards',
+                                'name' => '100% Compliance with Institutional Sustainability Assessment (ISA) Standards',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Regularly review compliance and submit gap-closing action plans (ISA)', 'units' => ['QMSO', 'QC', 'ACADEMIC']],
+                                    ['title' => 'Regular review of compliance to standards and submit action plan to address gaps', 'units' => ['QMSO', 'QC', 'ACADEMIC']],
                                 ],
                             ],
                             '1.8.2' => [
-                                'name' => 'Compliance with Autonomous Standards',
+                                'name' => '100% Compliance with Autonomous Standards',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Regularly review compliance and submit gap-closing action plans (Autonomous Standards)', 'units' => ['QMSO', 'QC', 'ACADEMIC']],
+                                    ['title' => 'Regular review of compliance to standards and submit action plan to address gaps', 'units' => ['QMSO', 'QC', 'ACADEMIC']],
                                 ],
                             ],
                             '1.8.3' => [
-                                'name' => 'Compliance to PACUCOA Accreditation standards for all programs',
+                                'name' => '100% Compliance to PACUCOA Accreditation standards for all programs',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Comply with PACUCOA standards and submit gap-closing action plans', 'units' => ['ACADEMIC', 'QC', 'QMSO']],
+                                    ['title' => 'Compliance to standards and submit action plan to address gaps.', 'units' => ['ACADEMIC', 'QC', 'QMSO']],
                                 ],
                             ],
                             '1.8.4' => [
-                                'name' => 'Compliance with CHED COD/COE standard',
+                                'name' => '100% compliance with CHED COD/COE standard',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Regularly review compliance and submit gap-closing action plans (CHED COD/COE)', 'units' => ['ACADEMIC', 'QMSO', 'QC']],
+                                    ['title' => 'Regular review of compliance to standards and submit action plan to address gaps.', 'units' => ['ACADEMIC', 'QMSO', 'QC']],
                                 ],
                             ],
                             '1.8.5' => [
-                                'name' => 'Compliance to International accreditation standards',
+                                'name' => '100% Compliance to International accreditation standards.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Review international accreditation requirements and submit gap-closing action plans', 'units' => ['ACADEMIC', 'QMSO', 'QC']],
+                                    ['title' => 'All quality circles to review requirements and submit action plans to address gaps.', 'units' => ['ACADEMIC', 'QMSO', 'QC']],
                                 ],
                             ],
                             '1.8.6' => [
-                                'name' => 'Compliance with ISO 9001:2015 version',
+                                'name' => '100% Compliance with ISO 9001:2015 version by AY 2023-2026',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Monitor, review, and evaluate compliance with ISO 9001:2015 standards', 'units' => ['QMSO', 'ACADEMIC', 'NONACADEMIC', 'DQMR', 'IQA']],
+                                    ['title' => 'Monitoring, review and evaluation on the compliance to ISO 9001:2015 standards.', 'units' => ['QMSO', 'ACADEMIC', 'NONACADEMIC', 'DQMR', 'IQA']],
                                 ],
                             ],
                             '1.8.7' => [
-                                'name' => 'Compliance to National Competency Certification',
+                                'name' => '100% Compliance to National Competency Certification',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Identify, train, and capacitate faculty for TESDA qualified assessor assessments', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Identify, train and capacitate faculty members to take the assessments to with TESDA qualify assessors.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -536,46 +558,54 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Research Production, Dissemination, Utilization',
                         'kpis' => [
                             '2.1.1' => [
-                                'name' => 'Full-time faculty personnel engaged in research',
+                                'name' => 'Full time faculty personnel are engaged in research',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Create a core team of research coordinators and personnel; conduct weekly research didactics', 'units' => ['CRI', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Creation of a core team among research coordinators, teaching and non-teaching personnel.', 'units' => ['CRI', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Conduct weekly research didactics for the faculty.', 'units' => ['CRI', 'ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                             '2.1.2' => [
                                 'name' => 'At least one research capacity and capability building per college per semester',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct discipline-specific research capability trainings and workshops per semester', 'units' => ['CRI', 'ACADEMIC']],
-                                    ['title' => 'Produce research outputs using netnography design and big data analysis', 'units' => ['CRI', 'ACADEMIC']],
+                                    ['title' => 'Conduct Discipline-Specific Research Capability Trainings and Workshops per Semester for every College/Program including non-teaching staffs based on the results of the need\'s assessment survey.', 'units' => ['CRI', 'ACADEMIC']],
+                                    ['title' => 'Produce outputs which uses NETNOGRAPHY research design and big data analysis.', 'units' => ['CRI', 'ACADEMIC']],
                                 ],
                             ],
                             '2.1.3' => [
                                 'name' => 'One research journal per college per academic year',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Publish research outputs in the college research journal', 'units' => ['CRI', 'ACADEMIC']],
+                                    ['title' => 'Publish research outputs in the college research journal.', 'units' => ['CRI', 'ACADEMIC']],
                                 ],
                             ],
                             '2.1.4' => [
-                                'name' => 'At least two research-based S&T applications for patent and/or four utility models',
+                                'name' => 'At least two research-based science and technology applied for patent and/or at least four utility models',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Forge cross-disciplinary collaborative research within the university', 'units' => ['CRI', 'ACADEMIC']],
+                                    ['title' => 'Forge collaboration researches among different disciplines in the university.', 'units' => ['CRI', 'ACADEMIC']],
                                 ],
                             ],
                             '2.1.5' => [
-                                'name' => 'At least one research output from Non-Teaching Personnel per unit',
+                                'name' => 'At least one (1) research output from Non-Teaching Personnel per unit',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct training and workshop on writing in a publishable format', 'units' => ['CRI', 'NONACADEMIC']],
+                                    ['title' => 'Conduct a training and workshop on writing a publishable format research.', 'units' => ['CRI', 'NONACADEMIC']],
                                 ],
                             ],
                             '2.1.6' => [
                                 'name' => 'Utilize tracer study results yearly per academic unit',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Innovate curricula and improve learning outcomes/graduate competencies using tracer data', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Innovate curricula and improve learning outcomes and graduate competencies.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '2.1.7' => [
                                 'name' => 'Thesis/dissertation are IMRAD-ready',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Modify thesis/dissertation format to become IMRAD-ready', 'units' => ['CRI', 'ACADEMIC']],
+                                    ['title' => 'Modify thesis/dissertation format to become IMRAD-ready.', 'units' => ['CRI', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -585,12 +615,14 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Knowledge Management',
                         'kpis' => [
                             '2.2.1' => [
-                                'name' => 'Deployment of knowledge management system, measurement and analysis',
+                                'name' => '100% deployment of knowledge management system, measurement and analysis.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Prepare a Knowledge Management Manual with forms and SOPs', 'units' => ['ACADEMIC', 'HRD']],
-                                    ['title' => 'Deploy Knowledge Management System activities per unit', 'units' => ['ACADEMIC', 'HRD']],
-                                    ['title' => 'Include KM System in scheduled re-orientation and unit performance evaluation KPIs', 'units' => ['ACADEMIC', 'HRD']],
-                                    ['title' => 'Promote knowledge management programs via e-media channels', 'units' => ['ACADEMIC', 'HRD']],
+                                    ['title' => 'Prepare a Knowledge Management Manual containing forms and SOPPs based on the listed processes and procedures.', 'units' => ['ACADEMIC', 'HRD']],
+                                    ['title' => 'Deployment of Knowledge Management System activities per unit.', 'units' => ['ACADEMIC', 'HRD']],
+                                    ['title' => 'Include in KM System in the scheduled re-orientation program.', 'units' => ['ACADEMIC', 'HRD']],
+                                    ['title' => 'Include KPI of Knowledge Management in the Performance Evaluation per unit.', 'units' => ['ACADEMIC', 'HRD']],
+                                    ['title' => 'Introduce knowledge management programs to the Visayanian community through exposure of programs to e-media channels.', 'units' => ['ACADEMIC', 'HRD']],
                                 ],
                             ],
                         ],
@@ -600,46 +632,53 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Library',
                         'kpis' => [
                             '2.3.1' => [
-                                'name' => 'Print acquisitions within AY 2023-2026',
+                                'name' => '30% print acquisitions within AY 2023-2026',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Expand printed resource collections in collaboration with academic units', 'units' => ['ACADEMIC', 'ARC']],
+                                    ['title' => 'Beef up collections of printed resources in collaboration with the academic units.', 'units' => ['ACADEMIC', 'ARC']],
                                 ],
                             ],
                             '2.3.2' => [
-                                'name' => 'Non-print acquisitions within AY 2023-2026',
+                                'name' => '70% non-print acquisitions within the AY 2023-2026',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Improve electronic resource collections via inter-university consortium', 'units' => ['ACADEMIC', 'ARC']],
+                                    ['title' => 'Improve collections of relevant electronic resources by participating in consortium with other universities.', 'units' => ['ACADEMIC', 'ARC']],
                                 ],
                             ],
                             '2.3.3' => [
-                                'name' => 'Information dissemination and accessibility of academic resources, print and non-print',
+                                'name' => '100% information dissemination and accessibility of academic resources, print & non-print.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Integrate the library management system into the university website', 'units' => ['ICTD', 'CPAD', 'ARC']],
-                                    ['title' => 'Create digital library guides/infographics promoting library resources', 'units' => ['ICTD', 'CPAD', 'ARC']],
+                                    ['title' => 'Integrate the library management system in the university website', 'units' => ['ICTD', 'CPAD', 'ARC']],
+                                    ['title' => 'Create infographics (digital library guides) to encourage all faculty and students to fully maximize the utilization of all library resources and services.', 'units' => ['ICTD', 'CPAD', 'ARC']],
                                 ],
                             ],
                             '2.3.4' => [
-                                'name' => 'Full-time faculty accessed and utilized academic resources per month',
+                                'name' => '100% of Full-time faculty accessed and utilized the academic resources per month',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Require full-time faculty to borrow at least two books/month and use e-learning resources', 'units' => ['ACADEMIC', 'ARC']],
+                                    ['title' => 'Require all full-time faculty to borrow at least two books per month and access the e-learning resources through the library management system.', 'units' => ['ACADEMIC', 'ARC']],
                                 ],
                             ],
                             '2.3.5' => [
-                                'name' => 'Students accessed and utilized academic resources per month',
+                                'name' => 'Students accessed and utilized the academic resources per month within the AY 2023-2026',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Require students to borrow at least two books/month and use e-learning resources', 'units' => ['ACADEMIC', 'ARC']],
+                                    ['title' => 'Require all the students to borrow at least two books per month and access the e-learning resources through the library management system.', 'units' => ['ACADEMIC', 'ARC']],
                                 ],
                             ],
                             '2.3.5B' => [
-                                'name' => 'Non-Teaching personnel borrow and read at least one book per month',
+                                'name' => 'Non-Teaching personnel should borrow and read at least one book per month',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Require non-teaching personnel to visit the ARC and use available resources', 'units' => ['NONACADEMIC', 'ARC']],
+                                    ['title' => 'Require the non-teaching personnel to visit the ARC and/or access the library management system and utilize the available resources.', 'units' => ['NONACADEMIC', 'ARC']],
                                 ],
                             ],
                             '2.3.6' => [
-                                'name' => 'At least one top academic resources borrower award recipient per department per semester (faculty, non-teaching, students)',
+                                'name' => 'At least one recipient per department per semester for the top academic resources borrower award from the following: a) faculty, b) non-teaching, and c) students',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Set award criteria and prepare a resource utilization monitoring matrix', 'units' => ['ARC']],
+                                    ['title' => 'Sets criteria for the recognition and prepares monitoring matrix on ARC resources utilization.', 'units' => ['ARC']],
                                 ],
                             ],
                         ],
@@ -661,36 +700,41 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Faculty',
                         'kpis' => [
                             '3.1.1' => [
-                                'name' => 'Full-time faculty meet required minimum academic qualifications',
+                                'name' => 'Full Time faculty members will have the required qualifications/minimum academic qualifications: a. Higher Education Graduate degree=100%; b. Basic Education LET Passer=100%, Graduate degree=30%',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Strictly comply with CHED minimum academic qualifications in hiring', 'units' => ['HRD', 'ACADEMIC']],
-                                    ['title' => 'Encourage academic personnel to avail of educational scholarships', 'units' => ['HRD', 'ACADEMIC']],
-                                    ['title' => 'Craft and monitor a 5-year faculty development plan', 'units' => ['HRD', 'ACADEMIC']],
+                                    ['title' => 'Strictly comply with the CHED minimum academic qualifications hiring personnel for academic position.', 'units' => ['HRD', 'ACADEMIC']],
+                                    ['title' => 'Encourage the academic personnel to avail of the educational scholarship.', 'units' => ['HRD', 'ACADEMIC']],
+                                    ['title' => 'Craft a 5-year faculty development plan and monitors its implementation', 'units' => ['HRD', 'ACADEMIC']],
                                 ],
                             ],
                             '3.1.2' => [
-                                'name' => '90% of faculty meet a performance rating of at least 4.51',
+                                'name' => '90% of the faculty meets a performance rating of at least 4.51',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Regularly evaluate faculty using the updated performance evaluation tool', 'units' => ['HRD', 'ACADEMIC']],
-                                    ['title' => 'Deploy automated Faculty Evaluation System integrated with the Student Portal', 'units' => ['HRD', 'ACADEMIC']],
+                                    ['title' => 'Regularly evaluate the faculty using the revised/updated performance evaluation tool.', 'units' => ['HRD', 'ACADEMIC']],
+                                    ['title' => 'Automated Faculty Evaluation System integrated with the Student Portal.', 'units' => ['HRD', 'ACADEMIC']],
                                 ],
                             ],
                             '3.1.3' => [
-                                'name' => 'Full-time faculty are members of relevant professional organizations',
+                                'name' => 'Full-time faculty are members of relevant professional organizations.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Require faculty to be a member/officer of a discipline-aligned professional organization', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Require all full-time faculty to be involved as member or officer in a professional organization that is aligned to their discipline.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.1.4' => [
                                 'name' => 'At least one class section advisership every semester',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Organize homeroom advisership in regular classes', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Homeroom organization in regular classes.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.1.5' => [
-                                'name' => 'Deployment of Ranking, Tenureship and Promotion',
+                                'name' => 'Deployment of Ranking, Tenureship & Promotion',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Faculty respond to the ranking call and submit required evidence', 'units' => ['HRD', 'ACADEMIC']],
+                                    ['title' => 'Faculty responds to the call for ranking, send application and submit with the required evidence for ranking.', 'units' => ['HRD', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -701,67 +745,79 @@ class StrategicPlanSeeder extends Seeder
                         'kpis' => [
                             '3.2.1' => [
                                 'name' => 'Compliance with Curriculum Validation every semester',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Prepare a curriculum validation policy and conduct validation each semester', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Develop an automated curriculum-compliance system embedded in UV ACCESS LMS', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Prepare a curriculum validation policy.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Conduct a curriculum validation before the end of each semester.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Develop an automated system embedded in the UV ACCESS LMS as part of the course compliance.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.2' => [
-                                'name' => 'Compliance with Curriculum Evaluation every four/five years',
+                                'name' => '100% compliance with Curriculum Evaluation every four/five years',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct curriculum evaluation every four or five years', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Train prospective IAAC members on curriculum review and evaluation', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Conduct a curriculum evaluation every four or five years.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Conduct seminar/workshop/training for all the prospective participants (IAAC members) on the conduct of the curriculum review and evaluation.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.3' => [
-                                'name' => 'Compliance to selective retention guidelines',
+                                'name' => 'Compliance to selective retention guidelines.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Prepare and comply with selective retention policies for all programs', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Publish each program\'s retention policy on the university website', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Prepare selective retention policies for all programs.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Compliance to selective retention policies in all programs.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Integrate in the University website the retention policy of each program.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.4' => [
-                                'name' => 'Above national passing percentage for all licensure/bar exams for 1st-time takers',
+                                'name' => 'Above national passing percentage for all licensure/bar exams for 1st time takers.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Deploy board exam preparation policy', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Deployment of board exam prep policy.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.5' => [
-                                'name' => 'Deployment of at least one external certification per program for faculty',
+                                'name' => 'Deployment of at least one external certification per program for faculty.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Capacitate and train faculty to deliver external certification programs', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Establish partnerships with certification-providing agencies/institutions', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Capacitate and train faculty to deliver the external certification programs.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Establish partnership with agencies/institution providing certification programs.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.6' => [
-                                'name' => 'Integration of one NC (National Certificate) per program',
+                                'name' => 'Integration of One NC per program',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Verify TESDA NC programs aligned to offered programs', 'units' => ['ACADEMIC', 'EDTECH']],
+                                    ['title' => 'Verify with TESDA available NC programs aligned to the programs offered.', 'units' => ['ACADEMIC', 'EDTECH']],
                                 ],
                             ],
                             '3.2.7' => [
                                 'name' => 'Organize student Quality Circles in all year levels',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Identify and organize students into Quality Circles per college/year level', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Identify students who will compose the quality circle per college/per year level and organize them according to the Students\' Quality circle policy', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.8' => [
-                                'name' => '3rd-year students take sub-professional and professional Civil Service examinations',
+                                'name' => '3rd year students should take sub-professional and professional Civil Service examinations',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Orient students on Civil Service exam types and career qualification paths', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Facilitate Civil Service exam application (paper-based and computer-based)', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Orient students on the types of civil service exam and career advancement in terms of qualification.', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Facilitate application the civil service examination in both procedure Pencil and Paper Test and Computer Based Examination.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.9' => [
-                                'name' => 'Faculty members acquire a C1 score in the International English Language Certification',
+                                'name' => 'Faculty Members should acquire score of C1 in the International English Language Certification.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Prepare an intervention program across all academic units', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Prepare an intervention program across all academic units.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                             '3.2.10' => [
-                                'name' => 'Students acquire a B1 score in the International English Language Certification',
+                                'name' => 'Students should acquire score of B1 in the International English Language Certification.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Prepare an intervention program across all year levels', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Prepare an intervention program across all year level.', 'units' => ['ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -771,14 +827,15 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Innovative Education',
                         'kpis' => [
                             '3.3.1' => [
-                                'name' => 'Implementation of the e-learning program/roadmap',
+                                'name' => '100% implementation of the E-learning program/roadmap',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Develop online course modules per program/college in Office 365 and Open LMS', 'units' => ['ACADEMIC', 'CIE']],
-                                    ['title' => 'Develop a HyFlex learning strategy for all colleges', 'units' => ['ACADEMIC', 'CIE']],
-                                    ['title' => 'Provide ICT professional development training (AI, KM, IoT, data science)', 'units' => ['ACADEMIC', 'CIE']],
-                                    ['title' => 'Retool faculty on MS Teams integration within UV ACCESS LMS', 'units' => ['ACADEMIC', 'CIE']],
-                                    ['title' => 'Establish strategic partnerships with technology companies (MOA/MOU)', 'units' => ['ACADEMIC', 'CIE']],
-                                    ['title' => 'Integrate AI/robotics into all courses', 'units' => ['ACADEMIC', 'CIE']],
+                                    ['title' => 'Develop Online Course Module per program per College in the Office 365 and Open LMS.', 'units' => ['ACADEMIC', 'CIE']],
+                                    ['title' => 'Develop Hyflex Learning Strategy in all colleges.', 'units' => ['ACADEMIC', 'CIE']],
+                                    ['title' => 'Provide professional development training courses on ICT for faculty and staff (e.g. AI, KM, IoT, data science).', 'units' => ['ACADEMIC', 'CIE']],
+                                    ['title' => 'Retooling on integration of MS Teams in the LMS (UV ACCESS)', 'units' => ['ACADEMIC', 'CIE']],
+                                    ['title' => 'Strategic partnership with technology companies through MOA and MOU.', 'units' => ['ACADEMIC', 'CIE']],
+                                    ['title' => 'Integrate AI/Robotics in all courses.', 'units' => ['ACADEMIC', 'CIE']],
                                 ],
                             ],
                         ],
@@ -788,26 +845,30 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Employability',
                         'kpis' => [
                             '3.4.1' => [
-                                'name' => 'Graduates engaged in gainful activities and professional development within 12 months after graduation',
+                                'name' => 'Graduates are engaged in gainful activities and professional development within 12-months after graduation (employment, entrepreneurship, graduate studies).',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Monitor graduate employment, entrepreneurship, and further study engagement', 'units' => ['CPAD', 'ALUMNI', 'ACADEMIC']],
-                                    ['title' => 'Provide incentives for graduate post-employment feedback', 'units' => ['CPAD', 'ALUMNI', 'ACADEMIC']],
-                                    ['title' => 'Conduct regular job fairs with industry partners and document on-the-spot hires', 'units' => ['CPAD', 'ALUMNI', 'ACADEMIC']],
+                                    ['title' => 'Monitor graduates to document their employment, engagement to entrepreneurial activities, or pursuit to further studies', 'units' => ['CPAD', 'ALUMNI', 'ACADEMIC']],
+                                    ['title' => 'Provide incentive to encourage graduates to give feedback when they get a job after their graduation.', 'units' => ['CPAD', 'ALUMNI', 'ACADEMIC']],
+                                    ['title' => 'Conduct a regular job fair in collaboration with industry partners and document those hired on the spot.', 'units' => ['CPAD', 'ALUMNI', 'ACADEMIC']],
                                 ],
                             ],
                             '3.4.2' => [
-                                'name' => 'Establish at least 2 industry partners per semester/program',
+                                'name' => 'Establish at least 2-industry partners per semester/program',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Identify and network with local/international companies for partnerships', 'units' => ['CPAD', 'IAD', 'ACADEMIC']],
-                                    ['title' => 'Build mutually beneficial industry-college collaborative programs', 'units' => ['CPAD', 'IAD', 'ACADEMIC']],
+                                    ['title' => 'Identify local and international companies and start networking for partnerships.', 'units' => ['CPAD', 'IAD', 'ACADEMIC']],
+                                    ['title' => 'Build collaborative programs that are mutually beneficial with the industry and the college/university.', 'units' => ['CPAD', 'IAD', 'ACADEMIC']],
                                 ],
                             ],
                             '3.4.3' => [
-                                'name' => 'Conduct the annual graduate tracer study',
+                                'name' => 'Conduct the annual tracer study',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Initiate and conduct the annual graduate tracer study', 'units' => ['CPAD', 'ALUMNI', 'CRI', 'ACADEMIC']],
-                                    ['title' => 'Convert tracer study data into a research paper with CRI', 'units' => ['CPAD', 'ALUMNI', 'CRI', 'ACADEMIC']],
-                                    ['title' => 'Cascade tracer study results to colleges to improve programs', 'units' => ['CPAD', 'ALUMNI', 'CRI', 'ACADEMIC']],
+                                    ['title' => 'Initiate the conduct of the annual graduate tracer studies', 'units' => ['CPAD', 'ALUMNI', 'CRI', 'ACADEMIC']],
+                                    ['title' => 'Collaborate with the colleges & alumni affairs in the deployment of the graduate tracer survey questionnaire.', 'units' => ['CPAD', 'ALUMNI', 'CRI', 'ACADEMIC']],
+                                    ['title' => 'Utilize data gathered from the tracer study and convert into a research paper in coordination with the CRI.', 'units' => ['CPAD', 'ALUMNI', 'CRI', 'ACADEMIC']],
+                                    ['title' => 'Cascade results to the colleges as an input to improve programs', 'units' => ['CPAD', 'ALUMNI', 'CRI', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -829,34 +890,39 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Community Extension',
                         'kpis' => [
                             '4.1.1' => [
-                                'name' => 'Sectoral representation in community extension programs',
+                                'name' => '100% sectoral representation in community extension programs',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Involve all stakeholders in community extension programs', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC', 'ALUMNI']],
+                                    ['title' => 'Involvement of all stakeholders', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC', 'ALUMNI']],
                                 ],
                             ],
                             '4.1.2' => [
-                                'name' => 'At least 2 full researches per academic unit and one from non-teaching personnel',
+                                'name' => 'Conduct at least 2 full researches per academic unit and at least one from the non-teaching personnel',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct at least one extension program derived from these researches', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC', 'CRI']],
+                                    ['title' => 'Conduct at least one (1) extension programs from these researches.', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC', 'CRI']],
                                 ],
                             ],
                             '4.1.3' => [
-                                'name' => 'Involvement and participation in environmental protection and preservation',
+                                'name' => 'Involvement and participation in the environmental protection and preservation',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Develop programs related to environmental protection and conservation', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC', 'CRI']],
+                                    ['title' => 'Develop programs related to Environment Protection and Conservation.', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC', 'CRI']],
                                 ],
                             ],
                             '4.1.4' => [
-                                'name' => 'Sustain and expand the Community Tutorial program to other sitios',
+                                'name' => 'Sustain the Community Tutorial program. Expansion of the program to the other 6 sitios by the 2nd semester of AY 2023-2024',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Sustain the community tutorial program and expand to surrounding communities', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Sustain the community tutorial and expand to other surrounding communities.', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC']],
                                 ],
                             ],
                             '4.1.5' => [
-                                'name' => 'Implementation, involvement and participation from all colleges/departments',
+                                'name' => '100% implementation, involvement and participation from all colleges/departments during AY 2023-2026',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Involve COMEX, faculty, student reps, and college deans in planning to evaluation', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC']],
-                                    ['title' => 'Post COMEX activities on UV Facebook page and website', 'units' => ['COMEX', 'CPAD']],
+                                    ['title' => 'Participation of the COMEX representative, faculty and student representatives per program, and the college dean from planning to evaluation.', 'units' => ['COMEX', 'ACADEMIC', 'NONACADEMIC']],
+                                    ['title' => 'Posting of COMEX activities in UV FB page and website.', 'units' => ['COMEX', 'CPAD']],
                                 ],
                             ],
                         ],
@@ -866,9 +932,10 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Philippine Linkages',
                         'kpis' => [
                             '4.2.1' => [
-                                'name' => 'At least one active partnership with government, industry, or NGO per academic unit every semester',
+                                'name' => 'At least one active partnership with government, industry or NGO per academic unit every semester',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Document all networking with national and regional organizations', 'units' => ['COMEX', 'ACADEMIC']],
+                                    ['title' => 'Document all networking with national and regional organizations by all academic units', 'units' => ['COMEX', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -878,34 +945,39 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'International Linkages',
                         'kpis' => [
                             '4.3.1' => [
-                                'name' => 'At least one active partnership with an international university per academic unit per semester',
+                                'name' => 'At least one active partnership with international university per academic unit per semester.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Document all networking with international organizations', 'units' => ['COMEX', 'ACADEMIC']],
+                                    ['title' => 'Document all networking with international organizations by all academic units.', 'units' => ['COMEX', 'ACADEMIC']],
                                 ],
                             ],
                             '4.3.2' => [
-                                'name' => 'At least 1 faculty exchange per academic unit for AY 2024-2025',
+                                'name' => 'At least 1 faculty exchange per academic unit for academic year 2024-2025.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Deploy activities stipulated in the faculty exchange MOA/MOU', 'units' => ['IAD', 'ACADEMIC']],
+                                    ['title' => 'Deployment of activities stipulated in the MOA/MOU.', 'units' => ['IAD', 'ACADEMIC']],
                                 ],
                             ],
                             '4.3.3' => [
-                                'name' => 'At least 2 student exchange programs per academic unit for AY 2024-2025',
+                                'name' => 'At least 2 student exchange programs per academic unit for academic year 2024-2025.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Deploy activities stipulated in the student exchange MOA/MOU', 'units' => ['IAD', 'ACADEMIC']],
+                                    ['title' => 'Deployment of activities stipulated in the MOA/MOU.', 'units' => ['IAD', 'ACADEMIC']],
                                 ],
                             ],
                             '4.3.4' => [
-                                'name' => 'At least 1 collaborative research activity/colloquium (production, publication, presentation, utilization)',
+                                'name' => 'At least 1 collaborative Research Activity/Colloquium Activities such as: Production, Publication, Presentation, and utilization',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Deploy activities stipulated in the collaborative research MOA/MOU', 'units' => ['IAD', 'ACADEMIC']],
+                                    ['title' => 'Deployment of activities stipulated in the MOA/MOU.', 'units' => ['IAD', 'ACADEMIC']],
                                 ],
                             ],
                             '4.3.5' => [
-                                'name' => 'At least 50 foreign student admissions in any academic program for AY 2024-2025',
+                                'name' => 'At least 50 admissions of Foreign Students enrolled in any academic program for academic year 2024-2025.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Produce at least one campaign per type (commercial, reputation, education/awareness, social action) per semester', 'units' => ['IAD', 'ACADEMIC']],
-                                    ['title' => 'Develop at least one campaign per semester for the international market', 'units' => ['IAD', 'ACADEMIC']],
+                                    ['title' => 'Produce at least one for each types of campaigns (commercial, reputation, education/awareness and social action) per semester.', 'units' => ['IAD', 'ACADEMIC']],
+                                    ['title' => 'Develop at least one campaign per semester intended for the international market.', 'units' => ['IAD', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -927,38 +999,43 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'PR and Marketing',
                         'kpis' => [
                             '5.1.1' => [
-                                'name' => 'Freshmen enrollment targets by college size (CCJE 300; CAHS/COME 500; CAS/CBA/COED/CETA 600; JD 100; Grade 11 600)',
+                                'name' => 'Freshmen enrollment targets: a) at least 300 for colleges with a single program offering (CCJE); b) at least 500 for colleges with two to three program offerings, at least 50 students/program (CAHS, COME); c) at least 600 for colleges with more than three program offerings, at least 50 students/program (CAS, CBA, COED, CETA); d) at least 100 for JD; e) at least 600 for Grade 11, at least 50 students/track',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct focus group discussions to gather feedback and inputs', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
-                                    ['title' => 'Increase field marketing campaigns to private academic institutions', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
-                                    ['title' => 'Grow social media engagement and expand advertising to other platforms', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
-                                    ['title' => 'Create an enhanced "enroll now, pay later" and sponsorship scheme', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
+                                    ['title' => 'Conduct FGD as one of the tools to get feedback and inputs', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
+                                    ['title' => 'Increase field marketing campaign to private academic institutions.', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
+                                    ['title' => 'Create more page engagements in Facebook in a daily/weekly basis to reach more page likes and follows, and expand in other social media for advertisement and promotion.', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
+                                    ['title' => 'Create an enhanced "enroll now, pay later" scheme, sponsorship programs, for them to pursue their studies.', 'units' => ['CPAD', 'ACADEMIC', 'SASC', 'CRI']],
                                 ],
                             ],
                             '5.1.2' => [
-                                'name' => 'Achieve at least 80% student retention',
+                                'name' => 'Achieve at least 80% students\' retention',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Implement JRG\'s "Himunga-an System" and strengthen academic advising', 'units' => ['ACADEMIC']],
-                                    ['title' => 'Sustain positive student experiences through exceptional customer service', 'units' => ['NONACADEMIC']],
+                                    ['title' => 'Implement JRG\'s "Himunga-an System"; strengthen students\' academic advising', 'units' => ['ACADEMIC']],
+                                    ['title' => 'Sustain students\' positive experiences through the exceptional customer services throughout all units', 'units' => ['NONACADEMIC']],
                                 ],
                             ],
                             '5.1.3' => [
                                 'name' => 'Submission of College Marketing Plan',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct webinars and prepare the college marketing plan', 'units' => ['CPAD', 'ACADEMIC']],
+                                    ['title' => 'Conduct webinars and prepare Marketing Plan', 'units' => ['CPAD', 'ACADEMIC']],
                                 ],
                             ],
                             '5.1.4' => [
-                                'name' => 'Deployment of university campaign advertisement materials per semester',
+                                'name' => 'Deployment of the university campaign advertisement materials per semester',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Produce at least one campaign per type (commercial, reputation, education/awareness, social action) per semester', 'units' => ['CPAD', 'ACADEMIC']],
-                                    ['title' => 'Develop at least one campaign per semester for the international market', 'units' => ['CPAD', 'ACADEMIC']],
+                                    ['title' => 'Produce at least one for each types of campaigns (commercial, reputation, education/awareness and social action) per semester.', 'units' => ['CPAD', 'ACADEMIC']],
+                                    ['title' => 'Develop at least one campaign per semester intended for the international market.', 'units' => ['CPAD', 'ACADEMIC']],
                                 ],
                             ],
                             '5.1.5' => [
-                                'name' => 'Five signed MOA per academic year with feeder schools',
+                                'name' => 'Five (5) signed MOA per Academic Year with the feeder school',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Seal at least five feeder school partnerships per academic year', 'units' => ['CPAD', 'ACADEMIC']],
+                                    ['title' => 'Seal at least five (5) Feeder School Partnership per academic year', 'units' => ['CPAD', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -969,15 +1046,18 @@ class StrategicPlanSeeder extends Seeder
                         'kpis' => [
                             '5.2.1' => [
                                 'name' => 'Deployment of the Best Innovative Procedures Award (BIPA) and customer feedback mechanism in all units',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Strengthen the feedback system via the online portal and other mechanisms', 'units' => ['CPAD', 'ACADEMIC', 'NONACADEMIC', 'SASC']],
+                                    ['title' => 'Strengthen feedback system thru the university online portal and other mechanisms where stakeholders can convey service satisfaction and experiences.', 'units' => ['CPAD', 'ACADEMIC', 'NONACADEMIC', 'SASC']],
                                 ],
                             ],
                             '5.2.2' => [
                                 'name' => 'Response to customer feedback within seven days',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Provide timely feedback response via the online portal and other mechanisms', 'units' => ['SASC', 'ACADEMIC']],
-                                    ['title' => 'Create a customer feedback committee with academic, support-office, and SSC representation', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Timely feedback system thru the university online portal and other mechanisms where stakeholders can convey service satisfaction and experiences.', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Orient Internal Stakeholders on the various feedback mechanisms and the Standards Operating Policies and Procedures on Customer Feedback Facilitation.', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Create customer feedback committee comprising of employees from Academic units, Support Service Offices, President of SSC to realize sincere involvement.', 'units' => ['SASC', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -988,11 +1068,12 @@ class StrategicPlanSeeder extends Seeder
                         'kpis' => [
                             '5.3.1' => [
                                 'name' => 'Deployment of counseling program',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Sustain the guidance and counseling program via flexible deployment', 'units' => ['SASC', 'ACADEMIC']],
-                                    ['title' => 'Link with agencies for psychological assessment, debriefing, and medical assistance referrals', 'units' => ['SASC', 'ACADEMIC']],
-                                    ['title' => 'Partner with industries/companies on CIP deployment', 'units' => ['SASC', 'ACADEMIC']],
-                                    ['title' => 'Implement a peer counseling program', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Sustain the Implementation of Guidance and Counseling program through Flexible Deployment Program.', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Link with the different private or government agencies offering Psychological Assessment, Debriefing and Medical Assistance and refer students with special needs to specialists concerned.', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Partner with industries or companies on the deployment of CIP.', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Implement peer counseling program.', 'units' => ['SASC', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -1002,16 +1083,18 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Student Development and Discipline',
                         'kpis' => [
                             '5.4.1' => [
-                                'name' => 'Deployment of student-planned extracurricular activities',
+                                'name' => 'Deployment of student planned extracurricular activities.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Participate in inter-school competitions showcasing student talents', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Participate in inter-school competitions which give opportunity for students to exhibit and unleash their talents and potentials.', 'units' => ['SASC', 'ACADEMIC']],
                                 ],
                             ],
                             '5.4.3' => [
                                 'name' => '2% decrease of student violations',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Develop a student discipline program plan addressing new-normal challenges', 'units' => ['SASC', 'ACADEMIC']],
-                                    ['title' => 'Sustain monitoring of student behavioral concerns and awareness drives', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Developmental Program Plan on student discipline that counters the challenges of the new normal.', 'units' => ['SASC', 'ACADEMIC']],
+                                    ['title' => 'Sustain monitoring mechanism of student behavioral concerns. Conduct regular awareness drive on the digital mechanisms for monitoring students\' behavior.', 'units' => ['SASC', 'ACADEMIC']],
                                 ],
                             ],
                         ],
@@ -1021,9 +1104,10 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Gender and Development Program',
                         'kpis' => [
                             '5.5.1' => [
-                                'name' => 'Deployment of the Gender and Development program',
+                                'name' => 'Deployment of the Gender and development program',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Create gender-inclusive teaching materials and classroom resources', 'units' => ['ACADEMIC', 'SASC']],
+                                    ['title' => 'Create gender inclusive teaching materials and resources for teachers to enhance teacher\'s classroom discussion.', 'units' => ['ACADEMIC', 'SASC']],
                                 ],
                             ],
                         ],
@@ -1033,27 +1117,29 @@ class StrategicPlanSeeder extends Seeder
                         'name' => 'Sports Development',
                         'kpis' => [
                             '5.6.1' => [
-                                'name' => 'Involvement in intramural and extramural activities',
+                                'name' => '100% involvement in intramural and extramural activities',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Organize sports leagues among system schools and broadcast online', 'units' => ['SASC', 'ACADEMIC', 'COMEX', 'ACD']],
-                                    ['title' => 'Create virtual intramural activities with alumni and sponsor support', 'units' => ['SASC', 'ACADEMIC', 'ALUMNI', 'ACD']],
-                                    ['title' => 'Invite alumni and company representatives as resource speakers on fitness/sports webinars', 'units' => ['SASC', 'ACD', 'ALUMNI']],
-                                    ['title' => 'Reconnect and create linkages with former sponsors and alumni', 'units' => ['SASC', 'ACD', 'ALUMNI']],
+                                    ['title' => 'Organize sports leagues among the system schools by the support of the school\'s linkages and broadcast those though online platforms for global audience.', 'units' => ['SASC', 'ACADEMIC', 'COMEX', 'ACD']],
+                                    ['title' => 'Create Virtual Intramural activities for students & other stakeholders with support of the alumni and sponsors.', 'units' => ['SASC', 'ACADEMIC', 'ALUMNI', 'ACD']],
+                                    ['title' => 'Invite alumni and company representatives as resource speakers on fitness and sports related webinars.', 'units' => ['SASC', 'ACD', 'ALUMNI']],
+                                    ['title' => 'Initiate, reconnect and create linkages with the former sponsors and alumni.', 'units' => ['SASC', 'ACD', 'ALUMNI']],
                                 ],
                             ],
                         ],
                     ],
 
                     '5.7' => [
-                        'name' => 'Arts and Culture Development',
+                        'name' => 'Arts & Culture Development',
                         'kpis' => [
                             '5.7.1' => [
-                                'name' => 'Organize at least one NTPIF/Faculty/Student arts and culture program per semester',
+                                'name' => 'Organize at least one NTPIF/Faculty/Student arts and culture program per semester.',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Create a culture and arts development program plan', 'units' => ['ACADEMIC', 'NONACADEMIC', 'SASC']],
-                                    ['title' => 'Create a virtual platform for cultural and artistic performances and exhibitions', 'units' => ['ACADEMIC', 'NONACADEMIC', 'ACD']],
-                                    ['title' => 'Hold virtual and in-person cultural and artistic performances and exhibitions', 'units' => ['ACADEMIC', 'NONACADEMIC', 'ACD']],
-                                    ['title' => 'Intensify promotion of arts and culture activities through social media', 'units' => ['ACADEMIC', 'NONACADEMIC', 'ACD']],
+                                    ['title' => 'Create Culture and Arts development program plan.', 'units' => ['ACADEMIC', 'NONACADEMIC', 'SASC']],
+                                    ['title' => 'Create Virtual platform for Cultural & Artistic performances and Exhibitions.', 'units' => ['ACADEMIC', 'NONACADEMIC', 'ACD']],
+                                    ['title' => 'Create virtual and in-person cultural and artistic performances and exhibitions.', 'units' => ['ACADEMIC', 'NONACADEMIC', 'ACD']],
+                                    ['title' => 'Intensify the promotion of the Arts and Culture activities by increasing social media engagement.', 'units' => ['ACADEMIC', 'NONACADEMIC', 'ACD']],
                                 ],
                             ],
                         ],
@@ -1064,15 +1150,17 @@ class StrategicPlanSeeder extends Seeder
                         'kpis' => [
                             '5.8.1' => [
                                 'name' => 'Strengthen alumni chapter in all academic units',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Create a chapter alumni development plan in all academic units', 'units' => ['ACADEMIC', 'ALUMNI']],
-                                    ['title' => 'Create an International Alumni Chapter', 'units' => ['ACADEMIC', 'ALUMNI']],
+                                    ['title' => 'Creation of chapter alumni developmental plan in all academic units.', 'units' => ['ACADEMIC', 'ALUMNI']],
+                                    ['title' => 'Creation of International Alumni Chapter', 'units' => ['ACADEMIC', 'ALUMNI']],
                                 ],
                             ],
                             '5.8.2' => [
-                                'name' => 'Organize a university-wide Alumni Homecoming/Reunion every year',
+                                'name' => 'Organize university wide Alumni Homecoming/Reunion every year',
+                                'description' => null,
                                 'action_plans' => [
-                                    ['title' => 'Conduct alumni homecoming/reunion activities', 'units' => ['ALUMNI', 'UVAAI']],
+                                    ['title' => 'Conduct Alumni Homecoming/reunion activities.', 'units' => ['ALUMNI', 'UVAAI']],
                                 ],
                             ],
                         ],

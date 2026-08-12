@@ -1,14 +1,17 @@
 import type { ImgHTMLAttributes } from 'react';
+import { cn } from '@/lib/utils'; // standard shadcn / tailwind helper
 
-export default function AppLogoIcon(
-    props: ImgHTMLAttributes<HTMLImageElement>,
-) {
+export default function AppLogoIcon({
+    className,
+    alt = 'Logo',
+    ...props
+}: ImgHTMLAttributes<HTMLImageElement>) {
     return (
         <img
-            src="/images/UVLOGO.svg" // This is the correct path for public/ images
-            alt="Logo"
+            src="/images/UVLOGO.svg"
+            alt={alt}
             {...props}
-            className={`h-10 w-10 ${props.className ?? ''}`}
+            className={cn('h-10 w-10 object-contain', className)}
         />
     );
 }

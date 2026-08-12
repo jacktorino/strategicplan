@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ActionPlanUnit extends Pivot
@@ -24,5 +25,10 @@ class ActionPlanUnit extends Pivot
     public function organizationalUnit(): BelongsTo
     {
         return $this->belongsTo(OrganizationalUnit::class);
+    }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(ActionPlanSubmission::class, 'action_plan_unit_id');
     }
 }

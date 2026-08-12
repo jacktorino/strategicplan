@@ -15,7 +15,10 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public / Guest Routes
-Route::inertia('/', 'welcome')->name('home');
+Route::middleware('guest')->group(function () {
+    Route::inertia('/', 'auth/login')->name('home');
+});
+
 
 // Authenticated Routes
 Route::middleware(['auth', 'verified'])->group(function () {
